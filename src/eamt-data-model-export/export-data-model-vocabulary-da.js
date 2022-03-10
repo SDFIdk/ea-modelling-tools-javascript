@@ -53,7 +53,7 @@ function main() {
 		}
 		
 		// cvs format; in Danish
-		var options = "-o " + outputFolder + " -pkg " + package.PackageGUID + " -t csv -l da -p 10 ";
+		var options = '-o "' + outputFolder + '" -pkg ' + package.PackageGUID + ' -t csv -l da -p 10 ';
 		if (hasHeader) {
 			options = options + " -h ";
 		}
