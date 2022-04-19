@@ -4,6 +4,13 @@
 
 Scripts that assist in creating a logical data model in UML. Scripts that prepare the derivation of physical data schemas are not included here.
 
+### move-grunddata1-to-grunddata2
+
+
+⚠️ missing description
+
+
+
 ## eamt-utilities
 
 Utility functions.
@@ -34,20 +41,6 @@ Synchronizes the tagged values of the Concept and ConceptModel stereotypes of th
 
 Scripts used for keeping scripts developed in EA under version control.
 
-### export-eamt-scripts
-
-Exports the EAMT scripts
-
-Exports the scripts in the EAMT scripts groups as
-
-1. a EA reference data file for import in another EA instance 
-2. seperate script files
-3. a separate README.md file, containing the documentation extracted from the scripts
-
-The scripts should be saved in folder `ea-modelling-tools-javascript/src`.
-
-
-
 ### export-scripts
 
 
@@ -72,6 +65,20 @@ and below for the syntax.
  - square brackets (`[]`): matches any single character within the list that is enclosed within brackets, and can be used anywhere in the pattern string.
  - exclamation mark (`!`): matches any single character not in the list that is enclosed within the square brackets.
  - hyphen (`-`): matches any one of a range of characters that is enclosed within the square brackets.
+
+
+
+### export-eamt-scripts
+
+Exports the EAMT scripts
+
+Exports the scripts in the EAMT scripts groups as
+
+1. a EA reference data file for import in another EA instance 
+2. seperate script files
+3. a separate README.md file, containing the documentation extracted from the scripts
+
+The scripts should be saved in folder `ea-modelling-tools-javascript/src`.
 
 
 
