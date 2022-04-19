@@ -140,3 +140,21 @@ This script uses templates concept_model_rdf.ftlx and concept_model_asciidoc.ftl
 
 
 
+## eamt-data-model-validation
+
+
+
+### version-status-modified
+
+
+⚠️ missing description
+
+
+
+### stereotype
+
+
+⚠️ missing description
+
+
+
