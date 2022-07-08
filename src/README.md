@@ -27,24 +27,6 @@ This script uses template vocabulary_csv.ftl in %EAMT_HOME%/config/templates.
 
 
 
-## eamt-data-model-validation
-
-
-
-### stereotype
-
-
-⚠️ missing description
-
-
-
-### version-status-modified
-
-
-⚠️ missing description
-
-
-
 ## eamt-data-schema-preparation
 
 Scripts that assist in preparing the derivation of physical data schemas, e.g. using [ShapeChange](https://shapechange.net/).
@@ -153,6 +135,17 @@ and below for the syntax.
 
 
 
+## eamt-scripts
+
+
+
+### link-the-type-on-attributes-to-a-type-in-the-model
+
+
+Purpose: change types to types found in the model.
+
+
+
 ## eamt-utilities
 
 Utility functions.
@@ -161,6 +154,22 @@ Utility functions.
 
 
 
+
+
+
+
+## eamt-val-data-model-validation
+
+Validation scripts to validate the model against for instance the basic data model rules version 2. 
+
+### validate-model-basic-data2
+
+Validate a model against the basic data model rules version 2.
+
+Script to validate any model against the basic data model rules version 2 
+(http://grunddatamodel.datafordeler.dk/modelregler/grunddatamodelregler.html).
+
+Select a model in the Project Browser and run this script in order to validate it.
 
 
 
