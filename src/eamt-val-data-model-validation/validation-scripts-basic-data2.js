@@ -3,8 +3,8 @@
  */
 const upperCamel = ["Class", "Association class", "DataType", "Enumeration"]; 
 const lowerCamel = ["Aggregation", "Association", "Role", "Attribute"]; 
-const allowedUMLelements = ["Aggregation", "Class", "Generalization", "Association class", 'Association', "Composition", "Role", "Attribute", "DataType", "Enumeration", "Text", "Note", "Notetext"]; 
-const allowedstereotypesModel = ["Grunddata2::DKDomænemodel", "Grunddata2::DKKlassifikationsmodel"];
+const allowedUMLelements = ["Aggregation", "Class", "Generalization", "Association class", 'Association', "Composition", "Role", "Attribute", "DataType", "Enumeration", "Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"]; 
+const allowedstereotypesModel = ["Grunddata2::DKDomænemodel", "Grunddata2::DKKlassifikationsmodel", "DKDomænemodel", "DKKlassifikationsmodel"];
 const allowedstereotypesElement = ["Grunddata2::DKObjekttype", "Grunddata2::DKDatatype","Grunddata2::DKEnumeration", "Grunddata2::DKKodeliste"];
 const allowedstereotypesAttributeRole = "DKEgenskab";
 var elementIDlist = [];
@@ -46,7 +46,7 @@ function umlElementer(elements){
 						//do nothing;
 					} else {
 						LOGError("Type not on allowed UML type list");
-						Session.Output("Connectoren '" + currentConnector.Name + "' med typen '" + currentConnector.Type + "' er ikke en tilladt UML-type");
+						Session.Output("Connectoren med navn '" + currentConnector.Name + "' og type '" + currentConnector.Type + "' er ikke en tilladt UML-type");
 						r+=1;
 					}
 					
