@@ -814,7 +814,7 @@ function checkLegal(elements){
 			} else {
 				if (/\bhttps:\/\/www.retsinformation.dk\/eli\/lta/i.test(legalSourceElement) == false && /\bhttp:\/\/www.retsinformation.dk\/eli\/lta/i.test(legalSourceElement) == false){
 					LOGError("Wrong value given on tagged value 'legalSource' on element '" + currentElement.Name );
-					Session.Output("'legalSource' starter ikke med enten \"https://www.retsinformation.dk/eli/lta/\" eller \"http://www.retsinformation.dk/eli/lta/\".");
+					Session.Output("'legalSource' starter ikke med enten \"https://www.retsinformation.dk/eli/lta/\" eller \"http://www.retsinformation.dk/eli/lta/\" på elementet '" + currentElement.Name + "'.");
 					o+=1;
 				} 
 			}
