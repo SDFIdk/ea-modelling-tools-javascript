@@ -4,6 +4,7 @@
 const upperCamel = ["Class", "Association class", "DataType", "Enumeration"]; 
 const lowerCamel = ["Aggregation", "Association", "Role", "Attribute"]; 
 const allowedUMLelements = ["Aggregation", "Class", "Generalization", "Association class", 'Association', "Composition", "Role", "Attribute", "DataType", "Enumeration", "Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"]; 
+const omitUMLelements = ["ProxyConnector","Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"];
 const allowedstereotypesModel = ["Grunddata2::DKDomænemodel", "Grunddata2::DKKlassifikationsmodel", "DKDomænemodel", "DKKlassifikationsmodel"];
 const allowedstereotypesElement = ["Grunddata2::DKObjekttype", "Grunddata2::DKDatatype","Grunddata2::DKEnumeration", "Grunddata2::DKKodeliste"];
 const allowedstereotypesAttributeRole = "DKEgenskab";
@@ -552,9 +553,9 @@ function modeltags8(selectedPackage){
 		LOGError("Wrong or no value given on tagged value 'legalSource' on package " + selectedPackage.Name);
 		Session.Output("'legalSource' starter ikke med enten \"https://www.retsinformation.dk/eli/lta/\" eller \"http://www.retsinformation.dk/eli/lta/\".");
 	} else {j +=1 }
-	if (/\bhttp/.test(source) == false){
-		LOGError("Wrong or no value given on tagged value 'source' on package " + selectedPackage.Name);
-		Session.Output("'source' starter ikke med \"http\".");
+	if (source.trim().length == 0){
+		LOGError("No value given on tagged value 'source' on package " + selectedPackage.Name);
+		Session.Output("'source' er tom for pakken "+ selectedPackage.Name);
 	} else {j +=1}
 	if (j==2) {Session.Output("OK");}
 }
@@ -803,9 +804,9 @@ function checkLegal(elements){
 	for (var i = 0; i < elements.length; i++) {
 
 		var currentElement = elements[i];
-		//Vi ser lige bort fra de der proxyer.
-		if (currentElement.Type != 'ProxyConnector' && currentElement.Type != 'Text'){
-
+		//Vi ser lige bort fra elementer, der ikke har relevans her.
+		if (omitUMLelements.includes(currentElement.Type) == false){
+		
 			var legalSourceElement = getTaggedValueElement(currentElement, "legalSource", "noTag");
 			if (legalSourceElement == "noTag" || legalSourceElement == ""){
 				Session.Output("Ingen 'legalSource' på elementet '" + currentElement.Name + "'.");
