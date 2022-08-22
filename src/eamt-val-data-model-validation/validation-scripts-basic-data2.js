@@ -592,10 +592,10 @@ function identifikator(elements)
 		currentElement = elements[i];
 		if (currentElement.Type == "Class" || currentElement.Type == "DataType" || currentElement.Type == "Enumeration") {
 			var URI = getTaggedValueElement(currentElement, "URI", "noTag");		
-			if (/\bhttps:\/\/data.gov.dk\/model\/profile/g.test(URI) == false){
+			if (/\bhttps:\/\/data.gov.dk\/model\/profile\//g.test(URI) == false){
 				q+=1;
 				LOGError("Wrong value given on tagged value 'URI' on element '"+ currentElement.Name + "'.");
-				Session.Output("'URI' starter ikke med \"https://data.gov.dk/model/profile\" i elementet med navn '" + currentElement.Name + "'.")
+				Session.Output("'URI' starter ikke med \"https://data.gov.dk/model/profile/\" i elementet med navn '" + currentElement.Name + "'.")
 			}
 			for (var j = 0; j < URI_list.length; j++) {
 				if (URI == URI_list[j]) {
