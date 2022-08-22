@@ -27,7 +27,7 @@ function main() {
 		Session.Output(" ");
 		Session.Output("Dette er valideringsrapporten for modellen '" + selectedPackage.Name + "' udarbejdet af Modelsekretariatet d. " + now.getDate() + "/" + (now.getMonth() + 1) + " " + now.getFullYear() + ".");
 		Session.Output("________________________________________________________________________________________________________________")
-		/*
+		
 		Session.Output(" ");
 		Session.Output("Regel 4.1: Brug UML som det visuelle modelsprog");
 		Session.Output("Denne regel tjekkes manuelt.");
@@ -91,12 +91,12 @@ function main() {
 		Session.Output("Regel 5.2: Giv alle modelelementer en identifikator");
 		identifikator(elements);
 		Session.Output("Elementernes 'URI' bør tjekkes manuelt for at sikre meningsfyldt indhold.");
-		*/
+		
 		Session.Output(" ");
 		Session.Output("Regel 5.3: Angiv termer i et naturligt sprog");
 		sprog(elements);
 		Session.Output("Elementernes 'prefLabel (da)' bør tjekkes manuelt for at sikre meningsfyldt indhold.");
-/*
+
 		Session.Output(" ");
 		Session.Output("Regel 5.4: Brug standardiserede konventioner for angivelse af navne");
 		checkCamel(elements);
@@ -136,6 +136,7 @@ function main() {
 		
 		Session.Output(" ");
 		Session.Output("Regel 6.3: Grunddataobjekttyper bør understøtte virkningstid");
+		countHistorikmodel(elements);
 		checkVirk(elements);
 		historikReg(elements);
 		
@@ -147,7 +148,7 @@ function main() {
 		Session.Output("Regel 6.5: Alle modelentiteter bør understøtte beskedfordeling");
 		Session.Output("Forretningshændelse: " + checkAttr(elements,"forretningshændelse"));
 		Session.Output("Forretningsproces: " + checkAttr(elements,"forretningsproces"));
-		*/
+		
 		Session.Output(" ");
 		Session.Output("***** Rapport afsluttet " + _LOGGetDisplayDate() +" *****");
 	}

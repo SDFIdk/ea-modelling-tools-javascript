@@ -8,7 +8,7 @@ const omitUMLelements = ["ProxyConnector","Text", "Note", "Notetext", "NoteLink"
 const allowedstereotypesModel = ["Grunddata2::DKDomænemodel", "Grunddata2::DKKlassifikationsmodel", "DKDomænemodel", "DKKlassifikationsmodel"];
 const allowedstereotypesElement = ["Grunddata2::DKObjekttype", "Grunddata2::DKDatatype","Grunddata2::DKEnumeration", "Grunddata2::DKKodeliste"];
 const allowedstereotypesAttributeRole = "DKEgenskab";
-var elementIDlist = [];
+var elementIDlist = []; //Is being populated in checkID()/rule 6.1
 
 /**
  * Validate if the selected model uses the correct UML model elements following the basic data model rules version 2.
@@ -830,6 +830,7 @@ function checkDef(elements){
 function checkLegal(elements){
 
 	var o = 0;
+	var r = 0;
 	
 	for (var i = 0; i < elements.length; i++) {
 
@@ -848,10 +849,24 @@ function checkLegal(elements){
 					o+=1;
 				} 
 			}
+			
+			// Tjek af attributters "legalSource"
+			for (var k=0; k < currentElement.Attributes.Count; k++){
+				var attr = currentElement.Attributes.GetAt(k);
+				var legalSourceAttr = getTaggedValueAttribute(attr, "legalSource", "noTag");				
+				if (currentElement.Type == "Class" || currentElement.Type == "DataType") {
+						
+					if (/\bhttps:\/\/www.retsinformation.dk\/eli\/lta/i.test(legalSourceAttr) == false && /\bhttp:\/\/www.retsinformation.dk\/eli\/lta/i.test(legalSourceAttr) == false){
+						LOGError("No value given on tagged value 'legalSource' on the attribute '" + attr.Name + "' associated with element '" + currentElement.Name +"'.");
+						Session.Output("'legalSource' på attributten med navn '" + attr.Name + "' tilknyttet elementet '" + currentElement.Name +"' starter ikke med enten \"https://www.retsinformation.dk/eli/lta/\" eller \"http://www.retsinformation.dk/eli/lta/\".");
+						r+=1;
+					} 
+				}
+			}
 		}
 	}
 	
-	if (o == 0){
+	if (o==0 && r==0){
 		Session.Output("OK");
 	}
 }
@@ -1018,9 +1033,20 @@ function checkReg(elements)
 	var regcountTil = 0; //no. registreringTil attributes
 	var regcountAkt = 0; //no. registreringsaktør attributes
 	
+	//Hvis ID-listen ikke er blevet populeret tidligere:
+	if (elementIDlist.length == 0){
+
+		for (var i = 0; i < elements.length; i++) {
+			var currentElement = elements[i];
+			if (currentElement.HasStereotype("Grunddata2::DKObjekttype") || currentElement.HasStereotype("Grunddata2::DKDatatype")) {
+				elementIDlist.push(currentElement.ElementID);
+			}
+		}
+	}	
+	
 	for (var i = 0; i < elements.length; i++) {
 		
-		var currentElement = elements[i];		
+		var currentElement = elements[i];
 		
 		if (currentElement.HasStereotype("Grunddata2::DKObjekttype")) {
 			count+=1;
@@ -1155,6 +1181,26 @@ function checkReg(elements)
 }
 
 /**
+ * To count the number of model elements where historikmodel is a tag
+ *
+ * @param element
+ */
+function countHistorikmodel(elements)
+{	
+	var count = 0;
+	for (var i = 0; i < elements.length; i++) {
+		var currentElement = elements[i];
+		if(currentElement.HasStereotype("Grunddata2::DKObjekttype") && currentElement.Type != "Text"){
+			count+=1;
+		}
+	}
+	if (count == 1){
+		Session.Output("Der er " + count + " element i modellen.");
+	} else {Session.Output("Der er " + count + " elementer i modellen.");};
+}
+
+
+/**
  * If a modelelement is labelled with 'bitemporalitet' virkningstid is mandatory. 
  * The function here checks if any attributes exist named 'virkning*'.
  *
@@ -1175,9 +1221,23 @@ function checkVirk(elements)
 
 	var missing = 0;
 	
+	//Hvis ID-listen ikke er blevet populeret tidligere:
+	if (elementIDlist.length == 0){
+
+		for (var i = 0; i < elements.length; i++) {
+			var currentElement = elements[i];
+			if (currentElement.HasStereotype("Grunddata2::DKObjekttype") || currentElement.HasStereotype("Grunddata2::DKDatatype")) {
+				elementIDlist.push(currentElement.ElementID);
+			}
+		}
+	}
+	
 	for (var i = 0; i < elements.length; i++) {
 
 		var currentElement = elements[i];
+		
+
+		
 		var histTag = getTaggedValueElement(currentElement, 'historikmodel', 'noTag');
 		//Session.Output("Tagget: "+histTag + "    Elementet: " +currentElement.Name + "     Stereotypen: " +currentElement.Stereotype)
 		if (currentElement.HasStereotype("Grunddata2::DKObjekttype") && histTag == "bitemporalitet") {
@@ -1268,37 +1328,37 @@ function checkVirk(elements)
 			}
 			
 			if (rFra == 0){
-				Session.Output("Grunddatatypen '" +currentElement.Name + "' af stereotypen DKObjekttype mangler at modelleres med attributten virkningFra.");
+				Session.Output("Elementet '" +currentElement.Name + "' af stereotypen DKObjekttype mangler at modelleres med attributten virkningFra.");
 			}
 			
 			if (typefejlFra != 0){
-				Session.Output("Egenskaben 'virkningFra' på elementet '"+ currentElement.Name + "' er ikke af datatypen DateTime eller Date.");
+				Session.Output("Attributten 'virkningFra' på elementet '"+ currentElement.Name + "' er ikke af datatypen DateTime eller Date.");
 			}
 			
 			if (multifejlFra != 0){
-				Session.Output("Egenskaben 'virkningFra' på elementet '"+ currentElement.Name + "' har ikke multiplicitet 1.");
+				Session.Output("Attributten 'virkningFra' på elementet '"+ currentElement.Name + "' har ikke multiplicitet 1.");
 			}
 			if (rTil == 0){
-				Session.Output("Grunddatatypen '" +currentElement.Name + "' af stereotypen DKObjekttype mangler at modelleres med attributten virkningTil.");
+				Session.Output("Elementet '" +currentElement.Name + "' af stereotypen DKObjekttype mangler at modelleres med attributten virkningTil.");
 			}
 			
 			if (typefejlTil != 0){
-				Session.Output("Egenskaben 'virkningTil' på elementet '"+ currentElement.Name + "' er ikke af datatypen DateTime eller Date.");
+				Session.Output("Attributten 'virkningTil' på elementet '"+ currentElement.Name + "' er ikke af datatypen DateTime eller Date.");
 			}
 			
 			if (multifejlTil != 0){
-				Session.Output("Egenskaben 'virkningTil' på elementet '"+ currentElement.Name + "' har ikke multiplicitet 1.");
+				Session.Output("Attributten 'virkningTil' på elementet '"+ currentElement.Name + "' har ikke multiplicitet 1.");
 			}
 			if (rAkt == 0){
-				Session.Output("Grunddatatypen '" +currentElement.Name + "' af stereotypen DKObjekttype mangler at modelleres med attributten virkningsaktør.");
+				Session.Output("Elementet '" +currentElement.Name + "' af stereotypen DKObjekttype mangler at modelleres med attributten virkningsaktør.");
 			}
 			
 			if (typefejlAkt != 0){
-				Session.Output("Egenskaben 'virkningsaktør' på elementet '"+ currentElement.Name + "' er ikke af datatypen CharacterString.");
+				Session.Output("Attributten 'virkningsaktør' på elementet '"+ currentElement.Name + "' er ikke af datatypen CharacterString.");
 			}
 			
 			if (multifejlAkt != 0){
-				Session.Output("Egenskaben 'virkningsaktør' på elementet '"+ currentElement.Name + "' har ikke multiplicitet 1.");
+				Session.Output("Attributten 'virkningsaktør' på elementet '"+ currentElement.Name + "' har ikke multiplicitet 1.");
 			}
 			
 			countVirkFra = countVirkFra + rFra
@@ -1323,8 +1383,8 @@ function checkVirk(elements)
 	}
 	else if (count != 0 && countVirkFra == count && countVirkTil == count && countVirkAkt == count && typefejlFra == 0 && multifejlFra == 0 && typefejlTil == 0 && multifejlTil == 0 && typefejlAkt == 0 && multifejlAkt == 0 && missing == 0){
 		if (count == 1){
-			Session.Output(count + " element med 'historikmodel' = bitemporalitet: OK");
-		} else {Session.Output(count + " elementer med 'historikmodel' = bitemporalitet: OK");}		
+			Session.Output(count + " element med 'historikmodel' = bitemporalitet: Element OK");
+		} else {Session.Output(count + " elementer med 'historikmodel' = bitemporalitet: Elementer OK");}		
 	}
 }
 
@@ -1410,8 +1470,8 @@ function historikReg(elements)
 	}
 	else if (count != 0 && countVirkFra == 0 && countVirkTil == 0 && countVirkAkt == 0){
 		if (count == 1){
-			Session.Output(count + " element med 'historikmodel' = registreringshistorik: OK");
-		} else {Session.Output(count + " elementer med 'historikmodel' = registreringshistorik: OK");}		
+			Session.Output(count + " element med 'historikmodel' = registreringshistorik: Element OK");
+		} else {Session.Output(count + " elementer med 'historikmodel' = registreringshistorik: Elementer OK");}		
 	}
 }
 
