@@ -1259,7 +1259,7 @@ function checkVirk(elements)
 	var typefejlTil = 0;
 	var typefejlAkt = 0;
 
-	var missing = 0;
+	//var missing = 0;
 	
 	//Hvis ID-listen ikke er blevet populeret tidligere:
 	if (elementIDlist.length == 0){
@@ -1275,8 +1275,6 @@ function checkVirk(elements)
 	for (var i = 0; i < elements.length; i++) {
 
 		var currentElement = elements[i];
-		
-
 		
 		var histTag = getTaggedValueElement(currentElement, 'historikmodel', 'noTag');
 		//Session.Output("Tagget: "+histTag + "    Elementet: " +currentElement.Name + "     Stereotypen: " +currentElement.Stereotype)
@@ -1414,18 +1412,18 @@ function checkVirk(elements)
 		
 		if (currentElement.HasStereotype("Grunddata2::DKObjekttype") && histTag == "" && currentElement.Type != "Text"){
 			Session.Output("Elementet med navn '" + currentElement.Name + "' har ikke en værdi for tagget 'historikmodel'.");
-			missing += 1;
+			//missing += 1;
 		}
 	}
 	
 	if (count == 0){
 		Session.Output("Ingen elementer har angivet 'historikmodel' = bitemporalitet.");
 	}
-	else if (count != 0 && countVirkFra == count && countVirkTil == count && countVirkAkt == count && typefejlFra == 0 && multifejlFra == 0 && typefejlTil == 0 && multifejlTil == 0 && typefejlAkt == 0 && multifejlAkt == 0 && missing == 0){
+	else if (count != 0 && countVirkFra == count && countVirkTil == count && countVirkAkt == count && typefejlFra == 0 && multifejlFra == 0 && typefejlTil == 0 && multifejlTil == 0 && typefejlAkt == 0 && multifejlAkt == 0){
 		if (count == 1){
 			Session.Output(count + " element med 'historikmodel' = bitemporalitet: Element OK");
 		} else {Session.Output(count + " elementer med 'historikmodel' = bitemporalitet: Elementer OK");}		
-	}
+	} else {Session.Output("Fejlbehæftede elementer med angivet bitemporalitet. Optælling ikke mulig.");}
 }
 
 /**
@@ -1512,7 +1510,7 @@ function historikReg(elements)
 		if (count == 1){
 			Session.Output(count + " element med 'historikmodel' = registreringshistorik: Element OK");
 		} else {Session.Output(count + " elementer med 'historikmodel' = registreringshistorik: Elementer OK");}		
-	}
+	} else {Session.Output("Fejlbehæftede elementer med angivet registreringshistorik. Optælling ikke mulig.");}
 }
 
 /**
