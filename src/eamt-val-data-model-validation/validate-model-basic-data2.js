@@ -86,17 +86,17 @@ function main() {
 		Session.Output(" ");
 		Session.Output("Regel 5.1: Angiv meningsfyldte UML-navne for modelelementer");
 		Session.Output("Denne regel tjekkes manuelt.");
-		*/
+		
 		Session.Output(" ");
 		Session.Output("Regel 5.2: Giv alle modelelementer en identifikator");
 		identifikator(elements);
 		Session.Output("Elementernes 'URI' bør tjekkes manuelt for at sikre meningsfyldt indhold.");
-		/*
+		*/
 		Session.Output(" ");
 		Session.Output("Regel 5.3: Angiv termer i et naturligt sprog");
 		sprog(elements);
 		Session.Output("Elementernes 'prefLabelValue' bør tjekkes manuelt for at sikre meningsfyldt indhold.");
-
+/*
 		Session.Output(" ");
 		Session.Output("Regel 5.4: Brug standardiserede konventioner for angivelse af navne");
 		checkCamel(elements);

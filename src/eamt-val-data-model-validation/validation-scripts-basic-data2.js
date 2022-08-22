@@ -613,14 +613,12 @@ function identifikator(elements)
 				if (currentElement.Type == "Class" || currentElement.Type == "DataType") {
 						
 					if (/\bhttps:\/\/data.gov.dk\/model\/profile\//g.test(URIAttr) == false){
-						LOGError("Wrong value given on tagged value 'URI' on the attribute '" + attr + "' associated with element '" + currentElement.Name +"'.");
+						LOGError("Wrong value given on tagged value 'URI' on the attribute '" + attr.Name + "' associated with element '" + currentElement.Name +"'.");
 						Session.Output("'URI' på attributten med navn '" + attr.Name + "' tilknyttet elementet '" + currentElement.Name +"' starter ikke med \"https://data.gov.dk/model/profile/\".");
 						r+=1;
 					} 
 				}
-			}
-
-			
+			}			
 		}		
 	}
 	
@@ -635,6 +633,7 @@ function identifikator(elements)
 function sprog(elements)
 {	
 	var q = 0;
+	var r = 0;
 	
 	for (var i = 0; i < elements.length; i++) {
 		currentElement = elements[i];
@@ -647,9 +646,24 @@ function sprog(elements)
 				q+=1;
 			}
 		}
+		
+			// Tjek af attributters "prefLabel (da)"
+			for (var k=0; k < currentElement.Attributes.Count; k++){
+				var attr = currentElement.Attributes.GetAt(k);
+				var prefLabelAttr = getTaggedValueAttribute(attr, "prefLabel (da)", "noTag");				
+				if (currentElement.Type == "Class" || currentElement.Type == "DataType") {
+						
+					if (prefLabelAttr == null || prefLabelAttr == ""){
+						LOGError("No value given on tagged value 'prefLabel (da)' on the attribute '" + attr.Name + "' associated with element '" + currentElement.Name +"'.");
+						Session.Output("'prefLabel (da)' på attributten med navn '" + attr.Name + "' tilknyttet elementet '" + currentElement.Name +"' er ikke udfyldt.");
+						r+=1;
+					} 
+				}
+			}
+
 	}
 	
-	if (q==0) {Session.Output("OK");}
+	if (q==0 && r==0) {Session.Output("OK");}
 }
 
 /**
