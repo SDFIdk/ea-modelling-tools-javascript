@@ -872,6 +872,46 @@ function checkLegal(elements){
 }
 
 /**
+ * Check if the tagged value 'source' on model elements is filled out. Flag, if not.
+ *
+ * @param element
+ */
+function checkSource(elements){
+
+	var o = 0;
+	
+	for (var i = 0; i < elements.length; i++) {
+
+		var currentElement = elements[i];
+		//Vi ser lige bort fra elementer, der ikke har relevans her.
+		if (omitUMLelements.includes(currentElement.Type) == false){
+		
+			var sourceElement = getTaggedValueElement(currentElement, "source", "noTag");
+			if (sourceElement == "noTag" || sourceElement == ""){
+				Session.Output("(Ingen 'source' på elementet '" + currentElement.Name + "')");
+				o+=1;
+			}  
+			
+			
+			// Tjek af attributters "source"
+			for (var k=0; k < currentElement.Attributes.Count; k++){
+				var attr = currentElement.Attributes.GetAt(k);
+				var sourceAttr = getTaggedValueAttribute(attr, "source", "noTag");				
+				if (currentElement.Type == "Class" || currentElement.Type == "DataType") {
+						
+					if (sourceAttr == "noTag" || sourceAttr == ""){
+						LOGError("No value given on tagged value 'source' on the attribute '" + attr.Name + "' associated with element '" + currentElement.Name +"'.");
+						Session.Output("(Ingen 'source' på attributten med navn '" + attr.Name + "' tilknyttet elementet '" + currentElement.Name +"')");
+					} 
+				}
+			}
+		}
+	}
+}
+
+
+
+/**
  * Check the data types of the attributes. It has to be ISO types.
  *
  * @param element

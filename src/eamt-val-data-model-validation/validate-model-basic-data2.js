@@ -116,6 +116,7 @@ function main() {
 		Session.Output(" ");
 		Session.Output("Regel 5.8: Angiv modelelementers lovgrundlag");
 		checkLegal(elements);
+		checkSource(elements);
 		Session.Output("Elementernes 'legalSource' bør tjekkes manuelt for at sikre meningsfyldt indhold.");
 		
 		Session.Output(" ");
