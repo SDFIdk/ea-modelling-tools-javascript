@@ -644,8 +644,7 @@ function sprog(elements)
 				LOGError("No value given on tagged value 'prefLabel (da)' on element '" + currentElement.Name);
 				Session.Output("Elementet med navn '" + currentElement.Name + "' mangler værdi for 'prefLabel (da)'.");
 				q+=1;
-			}
-		}
+			}	
 		
 			// Tjek af attributters "prefLabel (da)"
 			for (var k=0; k < currentElement.Attributes.Count; k++){
@@ -660,7 +659,7 @@ function sprog(elements)
 					} 
 				}
 			}
-
+		}
 	}
 	
 	if (q==0 && r==0) {Session.Output("OK");}

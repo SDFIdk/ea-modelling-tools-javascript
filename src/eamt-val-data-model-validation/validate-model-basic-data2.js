@@ -95,7 +95,7 @@ function main() {
 		Session.Output(" ");
 		Session.Output("Regel 5.3: Angiv termer i et naturligt sprog");
 		sprog(elements);
-		Session.Output("Elementernes 'prefLabelValue' bør tjekkes manuelt for at sikre meningsfyldt indhold.");
+		Session.Output("Elementernes 'prefLabel (da)' bør tjekkes manuelt for at sikre meningsfyldt indhold.");
 /*
 		Session.Output(" ");
 		Session.Output("Regel 5.4: Brug standardiserede konventioner for angivelse af navne");
