@@ -586,6 +586,7 @@ function checkTagPackage(package, tag, defaultval) {
 function identifikator(elements)
 {	
 	var q = 0;
+	var r = 0;
 	var URI_list = [];
 	
 	for (var i = 0; i < elements.length; i++) {
@@ -604,10 +605,26 @@ function identifikator(elements)
 				}
 			}
 			URI_list.push(URI);
+			
+			// Tjek af attributters URI	
+			for (var k=0; k < currentElement.Attributes.Count; k++){
+				var attr = currentElement.Attributes.GetAt(k);
+				var URIAttr = getTaggedValueAttribute(attr, "URI", "noTag");				
+				if (currentElement.Type == "Class" || currentElement.Type == "DataType") {
+						
+					if (/\bhttps:\/\/data.gov.dk\/model\/profile\//g.test(URIAttr) == false){
+						LOGError("Wrong value given on tagged value 'URI' on the attribute '" + attr + "' associated with element '" + currentElement.Name +"'.");
+						Session.Output("'URI' på attributten med navn '" + attr.Name + "' tilknyttet elementet '" + currentElement.Name +"' starter ikke med \"https://data.gov.dk/model/profile/\".");
+						r+=1;
+					} 
+				}
+			}
+
+			
 		}		
 	}
 	
-	if (q==0) {Session.Output("OK");}
+	if (q==0 && r==0) {Session.Output("OK");}
 }
 
 /**
