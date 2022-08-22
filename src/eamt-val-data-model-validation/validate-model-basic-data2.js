@@ -43,7 +43,7 @@ function main() {
 		Session.Output(" ");
 		Session.Output("Regel 4.4: Angiv meningsfyldte navne og beskrivelser for modellen");
 		modeltags1(selectedPackage);
-		Session.Output("Beskrivelser og titler bør kontrolleres manuelt, for at sikre meningsfyldt indhold.");
+		Session.Output("Beskrivelser og titler bør kontrolleres manuelt for at sikre meningsfyldt indhold.");
 		
 		Session.Output(" ");
 		Session.Output("Regel 4.5: Angiv identifikation af modeller");
@@ -64,7 +64,7 @@ function main() {
 		Session.Output(" ");
 		Session.Output("Regel 4.9: Modellen skal godkendes");
 		modeltags6(selectedPackage);
-		Session.Output("Efter endt kontrol og konformanstjek, bør modellens status tilrettes.");
+		Session.Output("Efter endt kontrol og konformanstjek bør modellens status tilrettes.");
 	
 		Session.Output(" ");
 		Session.Output("Regel 4.10: Angiv modellens modelstatus");	
