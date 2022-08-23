@@ -5,7 +5,7 @@ const upperCamel = ["Class", "Association class", "DataType", "Enumeration"];
 const lowerCamel = ["Aggregation", "Association", "Role", "Attribute"]; 
 const allowedUMLelements = ["Aggregation", "Class", "Generalization", "Association class", 'Association', "Composition", "Role", "Attribute", "DataType", "Enumeration", "Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"]; 
 const omitUMLelements = ["ProxyConnector","Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"];
-const allowedstereotypesModel = ["Grunddata2::DKDomænemodel", "Grunddata2::DKKlassifikationsmodel", "DKDomænemodel", "DKKlassifikationsmodel"];
+const allowedstereotypesModel = ["Grunddata2::DKDomænemodel", "Grunddata2::DKKlassifikationsmodel"];
 const allowedstereotypesElement = ["Grunddata2::DKObjekttype", "Grunddata2::DKDatatype","Grunddata2::DKEnumeration", "Grunddata2::DKKodeliste"];
 const allowedstereotypesAttributeRole = "DKEgenskab";
 var elementIDlist = []; //Is being populated in checkID()/rule 6.1
@@ -138,15 +138,19 @@ function stereotypes(selectedPackage,elements){
 
 
 	//Tjek af modelelementernes stereotype	
+	var p = 0;
 	var q = 0;
+		
 	for (var i = 0; i < elements.length; i++) {
 		currentElement = elements[i];
-		//Hov, hvorfor tjekker jeg kun på de tre typer af elementer?? Nok fordi at stregerne mellem elementerne er af typen ProxyConnector, og de har ikke stereotyper 
+		//Jeg tjekker kun på de tre typer af elementer, fordi stregerne mellem elementerne er af typen ProxyConnector, og de har ikke stereotyper 
 		if (currentElement.Type == "Class" || currentElement.Type == "DataType" || currentElement.Type == "Enumeration") {
 			var k = checkStereotypeElement(currentElement);
+			p+=1;
+			
 			if (k==1){
-				LOGInfo("Stereotype on element '" + currentElement.Name + "' OK.");
-				q+=1;
+			LOGInfo("Stereotype on element '" + currentElement.Name + "' OK.");
+			q+=1;	
 			} else if (k>1){
 				LOGError("Too many stereotypes on element '" + currentElement.Name + "'. Only one is allowed.");
 				Session.Output("Elementet med navn '" + currentElement.Name + "' har for mange stereotyper tilknyttet. Kun 1 er tilladt.");
@@ -154,19 +158,22 @@ function stereotypes(selectedPackage,elements){
 				LOGError("Stereotype on element '" + currentElement.Name + "' not on allowed list or no stereotype given.");
 				Session.Output("Elementet med navn '" + currentElement.Name + "' har ikke korrekt stereotype.");
 			}			
-		} else if (currentElement.Type == "ProxyConnector"){q += 1;}	
+		} 
 	}
 
-	if (q == elements.length){
+	if (q == p){
 		Session.Output("Alle elementers stereotype: OK");
 	}
 	
 	//Tjek af attributternes stereotype, så vi looper igen	
 	var o = 0;
+	var w = 0;
+
 	for (var i = 0; i < elements.length; i++) {
 		currentElement = elements[i];
-		//Hov, hvorfor tjekker jeg kun på de to typer af elementer?? Fordi der kun er attributter på Class og Datatype, ikke Enumeration o.a. (her er det modelelementer, men læses som attributter, så de skal lige sorteres fra)
+		//Jeg tjekker kun på de to typer af elementer, fordi der kun er attributter på Class og Datatype, ikke Enumeration o.a. (her er det modelelementer, men læses som attributter, så de skal lige sorteres fra)
 		if (currentElement.Type == "Class" || currentElement.Type == "DataType") {
+			w+=1;
 			let param = checkStereotypeAttribute(currentElement);
 			var antalKorrekteAttributterPrElement = param[0];
 			var antalAttributterPrElement = param[1];
@@ -177,38 +184,40 @@ function stereotypes(selectedPackage,elements){
 			} else {
 				continue;
 			}
-		} else {o += 1;}	
+		} 
 	}
 	
-	if (o == elements.length){
+	if (o == w){
 		Session.Output("Alle attributters stereotype: OK");
 	}	
 	
 	//Tjek af rollernes stereotype også
 	var b = 0;
 	var c = 0;
-	var d = 0;
+	var akkLenAfConnectorSet = 0;
+	var errors = 0;
+
 	for (var i = 0; i < elements.length; i++) {
 		currentElement = elements[i];
-		//ProxyConnectoren er et element for forbindelser mellem element, men forbindelsernes egenskaber og endernes egenskaber ligger på elementerne.
+		//ProxyConnectoren er godt nok et element for forbindelser mellem elementer, men forbindelsernes egenskaber og endernes egenskaber ligger på elementerne. Derfor ses der bort fra Proxyen også her.
 		if (currentElement.Type != "ProxyConnector"){
-			//Session.Output("Alle");
 			let param = checkStereotypeConnectorEnd(currentElement);
 			var korrektClientRollePrElement = param[0];
 			var korrektSupplierRollePrElement = param[1];
-			var akkLenAfConnectorSet = param[2];
-			var stereotypeUdenRolle = param[3];
+			var lenAfConnectorSet = param[2];
+			var fejl = param[3];
 			
 			b = b + korrektClientRollePrElement;
 			c = c + korrektSupplierRollePrElement;
-			d = d + stereotypeUdenRolle;
-		} 		
+			akkLenAfConnectorSet = akkLenAfConnectorSet + lenAfConnectorSet;
+			errors = errors + fejl;
+		} 	
 	}
-	//Session.Output("Alle2");
-	if (b == c && c == d && d == 0){
+
+	if (b == c && c == errors && errors == 0){
 		Session.Output("Der findes ingen roller i denne pakke.");
 		}
-	else if ((b + c) == akkLenAfConnectorSet && d == 0){
+	else if (errors == 0){
 		Session.Output("Alle rollers stereotype: OK");
 	}		
 }
@@ -283,11 +292,11 @@ function checkStereotypeAttribute(element){
 
 /**
  * Function to check if the connector ends of a given element have an allowed stereotype. Four numbers are returned; the number of connector ends (client and supplier) with correct stereotypes, 
- * the total count of unique connector ends, and a count of instances with applied stereotype but no role.
+ * the total count of unique connector ends and an error count of any kind.
  * 
  * @param element {EA.Element}
  * @return variables [a, b, c, d]. Depicting a, b: the number of connector ends (client and supplier) with correct stereotypes, c; the total count
- * of unique connector ends, and d; a count of instances with applied stereotype but no role.
+ * of unique connector ends and d; an error count of any kind.
  */
 function checkStereotypeConnectorEnd(element){
 
@@ -296,7 +305,7 @@ function checkStereotypeConnectorEnd(element){
 	var supplierEnd as EA.ConnectorEnd;
 	var j=0;
 	var m=0;
-	var n=0; 
+	var anyError=0;
 	var connectorSet = new Set();
 
 	connectors = element.Connectors;
@@ -316,14 +325,17 @@ function checkStereotypeConnectorEnd(element){
 					if(clientEnd.StereotypeEx.includes(",")){
 						LOGError("Role '" + clientEnd.Role + "' in elementet '" + element.Name + "' has too many stereotypes.");
 						Session.Output("Source-rollen '" + clientEnd.Role + "' i elementet '" + element.Name + "' har for mange stereotyper.");
+						anyError+=1;
 					} else if (clientEnd.Stereotype.length == 0){
 						LOGError("Role '" + clientEnd.Role + "' in elementet '" + element.Name + "' has no stereotype.");
 						Session.Output("Source-rollen '" + clientEnd.Role + "' i elementet '" + element.Name + "' har ingen stereotype.");
+						anyError+=1;
 					} else if (clientEnd.StereotypeEx.includes(allowedstereotypesAttributeRole)){
 						j+=1;
 					} else {
 						LOGError("Role '" + clientEnd.Role + "' in elementet '" + element.Name + "' has wrong stereotype.");
 						Session.Output("Source-rollen '" + clientEnd.Role + "' i elementet '" + element.Name + "' har ikke korrekt stereotype.");
+						anyError+=1;
 					}
 				}
 				
@@ -334,14 +346,17 @@ function checkStereotypeConnectorEnd(element){
 					if(String(supplierEnd.StereotypeEx).includes(",")){
 						LOGError("Role '" + supplierEnd.Role + "' in elementet '" + element.Name + "' has too many stereotypes.");
 						Session.Output("Target-rollen '" + supplierEnd.Role + "' i elementet '" + element.Name + "' har for mange stereotyper.");
+						anyError+=1;
 					} else if (supplierEnd.Stereotype.length == 0){
 						LOGError("Role '" + supplierEnd.Role + "' in elementet '" + element.Name + "' has no stereotype.");
 						Session.Output("Target-rollen '" + supplierEnd.Role + "' i elementet '" + element.Name + "' har ingen stereotype.");
+						anyError+=1;
 					} else if (supplierEnd.StereotypeEx.includes(allowedstereotypesAttributeRole)){
 						m+=1;
 					} else {
 						LOGError("Role '" + supplierEnd.Role + "' in elementet '" + element.Name + "' has wrong stereotype.");
 						Session.Output("Target-rollen '" + supplierEnd.Role + "' i elementet '" + element.Name + "' har ikke korrekt stereotype.");
+						anyError+=1;
 					}
 				}
 				
@@ -349,18 +364,18 @@ function checkStereotypeConnectorEnd(element){
 				if(clientEnd.Stereotype.length > 0 && clientEnd.Role.length == 0){
 					LOGError("Empty role in elementet '" + element.Name + "', but stereotype given.");
 					Session.Output("Source-rollen i elementet '" + element.Name + "' er tom, men stereotype er angivet.");
-					n+=1;
+					anyError+=1;
 				}
 				
 				if(supplierEnd.Stereotype.length > 0 && supplierEnd.Role.length == 0){
 					LOGError("Empty role in elementet '" + element.Name + "', but stereotype given.");
 					Session.Output("Target-rollen i elementet '" + element.Name + "' er tom, men stereotype er angivet.");
-					n+=1;
+					anyError+=1;
 				}
 			}
 		}
 	}
-	return [j, m, connectorSet.size, n];
+	return [j, m, connectorSet.size, anyError];
 }
 
 /**
