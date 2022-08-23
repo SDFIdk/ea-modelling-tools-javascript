@@ -4,7 +4,7 @@
 const upperCamel = ["Class", "Association class", "DataType", "Enumeration"]; 
 const lowerCamel = ["Aggregation", "Association", "Role", "Attribute"]; 
 const allowedUMLelements = ["Aggregation", "Class", "Generalization", "Association class", 'Association', "Composition", "Role", "Attribute", "DataType", "Enumeration", "Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"]; 
-const omitUMLelements = ["ProxyConnector","Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"];
+const omitUMLelementsType = ["ProxyConnector","Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"];
 const allowedstereotypesModel = ["Grunddata2::DKDomænemodel", "Grunddata2::DKKlassifikationsmodel"];
 const allowedstereotypesElement = ["Grunddata2::DKObjekttype", "Grunddata2::DKDatatype","Grunddata2::DKEnumeration", "Grunddata2::DKKodeliste"];
 const allowedstereotypesAttributeRole = "DKEgenskab";
@@ -777,8 +777,8 @@ function checkDef(elements){
 	for (var i = 0; i < elements.length; i++) {
 
 		var currentElement = elements[i];
-		//Vi ser lige bort fra de der proxyer og tekstfelter.
-		if (currentElement.Type != 'ProxyConnector' && currentElement.Type != 'Text'){
+		//Vi ser lige bort fra elementer, der ikke har relevans her.
+		if (omitUMLelementsType.includes(currentElement.Type) == false){
 			var defElement = getTaggedValueElement(currentElement, "definition (da)", "noTag");
 			
 			if (defElement == "noTag" || defElement == ""){
@@ -851,7 +851,7 @@ function checkLegal(elements){
 
 		var currentElement = elements[i];
 		//Vi ser lige bort fra elementer, der ikke har relevans her.
-		if (omitUMLelements.includes(currentElement.Type) == false){
+		if (omitUMLelementsType.includes(currentElement.Type) == false){
 		
 			var legalSourceElement = getTaggedValueElement(currentElement, "legalSource", "noTag");
 			if (legalSourceElement == "noTag" || legalSourceElement == ""){
@@ -899,7 +899,7 @@ function checkSource(elements){
 
 		var currentElement = elements[i];
 		//Vi ser lige bort fra elementer, der ikke har relevans her.
-		if (omitUMLelements.includes(currentElement.Type) == false){
+		if (omitUMLelementsType.includes(currentElement.Type) == false){
 		
 			var sourceElement = getTaggedValueElement(currentElement, "source", "noTag");
 			if (sourceElement == "noTag" || sourceElement == ""){
@@ -1273,8 +1273,6 @@ function checkVirk(elements)
 	var typefejlFra = 0;
 	var typefejlTil = 0;
 	var typefejlAkt = 0;
-
-	//var missing = 0;
 	
 	//Hvis ID-listen ikke er blevet populeret tidligere:
 	if (elementIDlist.length == 0){
@@ -1292,7 +1290,7 @@ function checkVirk(elements)
 		var currentElement = elements[i];
 		
 		var histTag = getTaggedValueElement(currentElement, 'historikmodel', 'noTag');
-		//Session.Output("Tagget: "+histTag + "    Elementet: " +currentElement.Name + "     Stereotypen: " +currentElement.Stereotype)
+
 		if (currentElement.HasStereotype("Grunddata2::DKObjekttype") && histTag == "bitemporalitet") {
 			
 			count+=1;
@@ -1427,7 +1425,6 @@ function checkVirk(elements)
 		
 		if (currentElement.HasStereotype("Grunddata2::DKObjekttype") && histTag == "" && currentElement.Type != "Text"){
 			Session.Output("Elementet med navn '" + currentElement.Name + "' har ikke en værdi for tagget 'historikmodel'.");
-			//missing += 1;
 		}
 	}
 	
@@ -1454,12 +1451,11 @@ function historikReg(elements)
 	var countVirkTil = 0; //no. virkningTil attributes
 	var countVirkAkt = 0; //no. virkningsaktør attributes
 
-	
 	for (var i = 0; i < elements.length; i++) {
 
 		var currentElement = elements[i];
 		var histTag = getTaggedValueElement(currentElement, 'historikmodel', 'noTagValue');
-		//Session.Output("Tagget: "+histTag + "    Elementet: " +currentElement.Name + "     Stereotypen: " +currentElement.Stereotype)
+
 		if (currentElement.HasStereotype("Grunddata2::DKObjekttype") && histTag == "registreringshistorik"){
 			count+=1;
 			var rFra = 0;
