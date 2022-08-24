@@ -3,11 +3,12 @@
  */
 const upperCamel = ["Class", "Association class", "DataType", "Enumeration"]; 
 const lowerCamel = ["Aggregation", "Association", "Role", "Attribute"]; 
-const allowedUMLelements = ["Aggregation", "Class", "Generalization", "Association class", 'Association', "Composition", "Role", "Attribute", "DataType", "Enumeration", "Text", "Note", "Notetext"]; 
+const allowedUMLelements = ["Aggregation", "Class", "Generalization", "Association class", 'Association', "Composition", "Role", "Attribute", "DataType", "Enumeration", "Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"]; 
+const omitUMLelementsType = ["ProxyConnector","Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"];
 const allowedstereotypesModel = ["Grunddata2::DKDomænemodel", "Grunddata2::DKKlassifikationsmodel"];
 const allowedstereotypesElement = ["Grunddata2::DKObjekttype", "Grunddata2::DKDatatype","Grunddata2::DKEnumeration", "Grunddata2::DKKodeliste"];
 const allowedstereotypesAttributeRole = "DKEgenskab";
-var elementIDlist = [];
+var elementIDlist = []; //Is being populated in checkID()/rule 6.1
 
 /**
  * Validate if the selected model uses the correct UML model elements following the basic data model rules version 2.
@@ -46,7 +47,7 @@ function umlElementer(elements){
 						//do nothing;
 					} else {
 						LOGError("Type not on allowed UML type list");
-						Session.Output("Connectoren '" + currentConnector.Name + "' med typen '" + currentConnector.Type + "' er ikke en tilladt UML-type");
+						Session.Output("Connectoren med navn '" + currentConnector.Name + "' og type '" + currentConnector.Type + "' er ikke en tilladt UML-type");
 						r+=1;
 					}
 					
@@ -137,15 +138,19 @@ function stereotypes(selectedPackage,elements){
 
 
 	//Tjek af modelelementernes stereotype	
+	var p = 0;
 	var q = 0;
+		
 	for (var i = 0; i < elements.length; i++) {
 		currentElement = elements[i];
-		//Hov, hvorfor tjekker jeg kun på de tre typer af elementer?? Nok fordi at stregerne mellem elementerne er af typen ProxyConnector, og de har ikke stereotyper 
+		//Jeg tjekker kun på de tre typer af elementer, fordi stregerne mellem elementerne er af typen ProxyConnector, og de har ikke stereotyper 
 		if (currentElement.Type == "Class" || currentElement.Type == "DataType" || currentElement.Type == "Enumeration") {
 			var k = checkStereotypeElement(currentElement);
+			p+=1;
+			
 			if (k==1){
-				LOGInfo("Stereotype on element '" + currentElement.Name + "' OK.");
-				q+=1;
+			LOGInfo("Stereotype on element '" + currentElement.Name + "' OK.");
+			q+=1;	
 			} else if (k>1){
 				LOGError("Too many stereotypes on element '" + currentElement.Name + "'. Only one is allowed.");
 				Session.Output("Elementet med navn '" + currentElement.Name + "' har for mange stereotyper tilknyttet. Kun 1 er tilladt.");
@@ -153,19 +158,22 @@ function stereotypes(selectedPackage,elements){
 				LOGError("Stereotype on element '" + currentElement.Name + "' not on allowed list or no stereotype given.");
 				Session.Output("Elementet med navn '" + currentElement.Name + "' har ikke korrekt stereotype.");
 			}			
-		} else if (currentElement.Type == "ProxyConnector"){q += 1;}	
+		} 
 	}
 
-	if (q == elements.length){
+	if (q == p){
 		Session.Output("Alle elementers stereotype: OK");
 	}
 	
 	//Tjek af attributternes stereotype, så vi looper igen	
 	var o = 0;
+	var w = 0;
+
 	for (var i = 0; i < elements.length; i++) {
 		currentElement = elements[i];
-		//Hov, hvorfor tjekker jeg kun på de to typer af elementer?? Fordi der kun er attributter på Class og Datatype, ikke Enumeration o.a. (her er det modelelementer, men læses som attributter, så de skal lige sorteres fra)
+		//Jeg tjekker kun på de to typer af elementer, fordi der kun er attributter på Class og Datatype, ikke Enumeration o.a. (her er det modelelementer, men læses som attributter, så de skal lige sorteres fra)
 		if (currentElement.Type == "Class" || currentElement.Type == "DataType") {
+			w+=1;
 			let param = checkStereotypeAttribute(currentElement);
 			var antalKorrekteAttributterPrElement = param[0];
 			var antalAttributterPrElement = param[1];
@@ -176,38 +184,40 @@ function stereotypes(selectedPackage,elements){
 			} else {
 				continue;
 			}
-		} else {o += 1;}	
+		} 
 	}
 	
-	if (o == elements.length){
+	if (o == w){
 		Session.Output("Alle attributters stereotype: OK");
 	}	
 	
 	//Tjek af rollernes stereotype også
 	var b = 0;
 	var c = 0;
-	var d = 0;
+	var akkLenAfConnectorSet = 0;
+	var errors = 0;
+
 	for (var i = 0; i < elements.length; i++) {
 		currentElement = elements[i];
-		//ProxyConnectoren er et element for forbindelser mellem element, men forbindelsernes egenskaber og endernes egenskaber ligger på elementerne.
+		//ProxyConnectoren er godt nok et element for forbindelser mellem elementer, men forbindelsernes egenskaber og endernes egenskaber ligger på elementerne. Derfor ses der bort fra Proxyen også her.
 		if (currentElement.Type != "ProxyConnector"){
-			//Session.Output("Alle");
 			let param = checkStereotypeConnectorEnd(currentElement);
 			var korrektClientRollePrElement = param[0];
 			var korrektSupplierRollePrElement = param[1];
-			var akkLenAfConnectorSet = param[2];
-			var stereotypeUdenRolle = param[3];
+			var lenAfConnectorSet = param[2];
+			var fejl = param[3];
 			
 			b = b + korrektClientRollePrElement;
 			c = c + korrektSupplierRollePrElement;
-			d = d + stereotypeUdenRolle;
-		} 		
+			akkLenAfConnectorSet = akkLenAfConnectorSet + lenAfConnectorSet;
+			errors = errors + fejl;
+		} 	
 	}
-	//Session.Output("Alle2");
-	if (b == c && c == d && d == 0){
+
+	if (b == c && c == errors && errors == 0){
 		Session.Output("Der findes ingen roller i denne pakke.");
 		}
-	else if ((b + c) == akkLenAfConnectorSet && d == 0){
+	else if (errors == 0){
 		Session.Output("Alle rollers stereotype: OK");
 	}		
 }
@@ -282,11 +292,11 @@ function checkStereotypeAttribute(element){
 
 /**
  * Function to check if the connector ends of a given element have an allowed stereotype. Four numbers are returned; the number of connector ends (client and supplier) with correct stereotypes, 
- * the total count of unique connector ends, and a count of instances with applied stereotype but no role.
+ * the total count of unique connector ends and an error count of any kind.
  * 
  * @param element {EA.Element}
  * @return variables [a, b, c, d]. Depicting a, b: the number of connector ends (client and supplier) with correct stereotypes, c; the total count
- * of unique connector ends, and d; a count of instances with applied stereotype but no role.
+ * of unique connector ends and d; an error count of any kind.
  */
 function checkStereotypeConnectorEnd(element){
 
@@ -295,7 +305,7 @@ function checkStereotypeConnectorEnd(element){
 	var supplierEnd as EA.ConnectorEnd;
 	var j=0;
 	var m=0;
-	var n=0; 
+	var anyError=0;
 	var connectorSet = new Set();
 
 	connectors = element.Connectors;
@@ -315,14 +325,17 @@ function checkStereotypeConnectorEnd(element){
 					if(clientEnd.StereotypeEx.includes(",")){
 						LOGError("Role '" + clientEnd.Role + "' in elementet '" + element.Name + "' has too many stereotypes.");
 						Session.Output("Source-rollen '" + clientEnd.Role + "' i elementet '" + element.Name + "' har for mange stereotyper.");
+						anyError+=1;
 					} else if (clientEnd.Stereotype.length == 0){
 						LOGError("Role '" + clientEnd.Role + "' in elementet '" + element.Name + "' has no stereotype.");
 						Session.Output("Source-rollen '" + clientEnd.Role + "' i elementet '" + element.Name + "' har ingen stereotype.");
+						anyError+=1;
 					} else if (clientEnd.StereotypeEx.includes(allowedstereotypesAttributeRole)){
 						j+=1;
 					} else {
 						LOGError("Role '" + clientEnd.Role + "' in elementet '" + element.Name + "' has wrong stereotype.");
 						Session.Output("Source-rollen '" + clientEnd.Role + "' i elementet '" + element.Name + "' har ikke korrekt stereotype.");
+						anyError+=1;
 					}
 				}
 				
@@ -333,14 +346,17 @@ function checkStereotypeConnectorEnd(element){
 					if(String(supplierEnd.StereotypeEx).includes(",")){
 						LOGError("Role '" + supplierEnd.Role + "' in elementet '" + element.Name + "' has too many stereotypes.");
 						Session.Output("Target-rollen '" + supplierEnd.Role + "' i elementet '" + element.Name + "' har for mange stereotyper.");
+						anyError+=1;
 					} else if (supplierEnd.Stereotype.length == 0){
 						LOGError("Role '" + supplierEnd.Role + "' in elementet '" + element.Name + "' has no stereotype.");
 						Session.Output("Target-rollen '" + supplierEnd.Role + "' i elementet '" + element.Name + "' har ingen stereotype.");
+						anyError+=1;
 					} else if (supplierEnd.StereotypeEx.includes(allowedstereotypesAttributeRole)){
 						m+=1;
 					} else {
 						LOGError("Role '" + supplierEnd.Role + "' in elementet '" + element.Name + "' has wrong stereotype.");
 						Session.Output("Target-rollen '" + supplierEnd.Role + "' i elementet '" + element.Name + "' har ikke korrekt stereotype.");
+						anyError+=1;
 					}
 				}
 				
@@ -348,18 +364,18 @@ function checkStereotypeConnectorEnd(element){
 				if(clientEnd.Stereotype.length > 0 && clientEnd.Role.length == 0){
 					LOGError("Empty role in elementet '" + element.Name + "', but stereotype given.");
 					Session.Output("Source-rollen i elementet '" + element.Name + "' er tom, men stereotype er angivet.");
-					n+=1;
+					anyError+=1;
 				}
 				
 				if(supplierEnd.Stereotype.length > 0 && supplierEnd.Role.length == 0){
 					LOGError("Empty role in elementet '" + element.Name + "', but stereotype given.");
 					Session.Output("Target-rollen i elementet '" + element.Name + "' er tom, men stereotype er angivet.");
-					n+=1;
+					anyError+=1;
 				}
 			}
 		}
 	}
-	return [j, m, connectorSet.size, n];
+	return [j, m, connectorSet.size, anyError];
 }
 
 /**
@@ -552,9 +568,9 @@ function modeltags8(selectedPackage){
 		LOGError("Wrong or no value given on tagged value 'legalSource' on package " + selectedPackage.Name);
 		Session.Output("'legalSource' starter ikke med enten \"https://www.retsinformation.dk/eli/lta/\" eller \"http://www.retsinformation.dk/eli/lta/\".");
 	} else {j +=1 }
-	if (/\bhttp/.test(source) == false){
-		LOGError("Wrong or no value given on tagged value 'source' on package " + selectedPackage.Name);
-		Session.Output("'source' starter ikke med \"http\".");
+	if (source.trim().length == 0){
+		LOGError("No value given on tagged value 'source' on package " + selectedPackage.Name);
+		Session.Output("'source' er tom for pakken "+ selectedPackage.Name);
 	} else {j +=1}
 	if (j==2) {Session.Output("OK");}
 }
@@ -585,16 +601,17 @@ function checkTagPackage(package, tag, defaultval) {
 function identifikator(elements)
 {	
 	var q = 0;
+	var r = 0;
 	var URI_list = [];
 	
 	for (var i = 0; i < elements.length; i++) {
 		currentElement = elements[i];
 		if (currentElement.Type == "Class" || currentElement.Type == "DataType" || currentElement.Type == "Enumeration") {
 			var URI = getTaggedValueElement(currentElement, "URI", "noTag");		
-			if (/\bhttps:\/\/data.gov.dk\/model\/profile/g.test(URI) == false){
+			if (/\bhttps:\/\/data.gov.dk\/model\/profile\//g.test(URI) == false){
 				q+=1;
 				LOGError("Wrong value given on tagged value 'URI' on element '"+ currentElement.Name + "'.");
-				Session.Output("'URI' starter ikke med \"https://data.gov.dk/model/profile\" i elementet med navn '" + currentElement.Name + "'.")
+				Session.Output("'URI' starter ikke med \"https://data.gov.dk/model/profile/\" i elementet med navn '" + currentElement.Name + "'.")
 			}
 			for (var j = 0; j < URI_list.length; j++) {
 				if (URI == URI_list[j]) {
@@ -603,10 +620,24 @@ function identifikator(elements)
 				}
 			}
 			URI_list.push(URI);
+			
+			// Tjek af attributters URI	
+			for (var k=0; k < currentElement.Attributes.Count; k++){
+				var attr = currentElement.Attributes.GetAt(k);
+				var URIAttr = getTaggedValueAttribute(attr, "URI", "noTag");				
+				if (currentElement.Type == "Class" || currentElement.Type == "DataType") {
+						
+					if (/\bhttps:\/\/data.gov.dk\/model\/profile\//g.test(URIAttr) == false){
+						LOGError("Wrong value given on tagged value 'URI' on the attribute '" + attr.Name + "' associated with element '" + currentElement.Name +"'.");
+						Session.Output("'URI' på attributten med navn '" + attr.Name + "' tilknyttet elementet '" + currentElement.Name +"' starter ikke med \"https://data.gov.dk/model/profile/\".");
+						r+=1;
+					} 
+				}
+			}			
 		}		
 	}
 	
-	if (q==0) {Session.Output("OK");}
+	if (q==0 && r==0) {Session.Output("OK");}
 }
 
 /**
@@ -617,6 +648,7 @@ function identifikator(elements)
 function sprog(elements)
 {	
 	var q = 0;
+	var r = 0;
 	
 	for (var i = 0; i < elements.length; i++) {
 		currentElement = elements[i];
@@ -627,11 +659,25 @@ function sprog(elements)
 				LOGError("No value given on tagged value 'prefLabel (da)' on element '" + currentElement.Name);
 				Session.Output("Elementet med navn '" + currentElement.Name + "' mangler værdi for 'prefLabel (da)'.");
 				q+=1;
+			}	
+		
+			// Tjek af attributters "prefLabel (da)"
+			for (var k=0; k < currentElement.Attributes.Count; k++){
+				var attr = currentElement.Attributes.GetAt(k);
+				var prefLabelAttr = getTaggedValueAttribute(attr, "prefLabel (da)", "noTag");				
+				if (currentElement.Type == "Class" || currentElement.Type == "DataType") {
+						
+					if (prefLabelAttr == null || prefLabelAttr == ""){
+						LOGError("No value given on tagged value 'prefLabel (da)' on the attribute '" + attr.Name + "' associated with element '" + currentElement.Name +"'.");
+						Session.Output("'prefLabel (da)' på attributten med navn '" + attr.Name + "' tilknyttet elementet '" + currentElement.Name +"' er ikke udfyldt.");
+						r+=1;
+					} 
+				}
 			}
 		}
 	}
 	
-	if (q==0) {Session.Output("OK");}
+	if (q==0 && r==0) {Session.Output("OK");}
 }
 
 /**
@@ -731,8 +777,8 @@ function checkDef(elements){
 	for (var i = 0; i < elements.length; i++) {
 
 		var currentElement = elements[i];
-		//Vi ser lige bort fra de der proxyer og tekstfelter.
-		if (currentElement.Type != 'ProxyConnector' && currentElement.Type != 'Text'){
+		//Vi ser lige bort fra elementer, der ikke har relevans her.
+		if (omitUMLelementsType.includes(currentElement.Type) == false){
 			var defElement = getTaggedValueElement(currentElement, "definition (da)", "noTag");
 			
 			if (defElement == "noTag" || defElement == ""){
@@ -799,13 +845,14 @@ function checkDef(elements){
 function checkLegal(elements){
 
 	var o = 0;
+	var r = 0;
 	
 	for (var i = 0; i < elements.length; i++) {
 
 		var currentElement = elements[i];
-		//Vi ser lige bort fra de der proxyer.
-		if (currentElement.Type != 'ProxyConnector' && currentElement.Type != 'Text'){
-
+		//Vi ser lige bort fra elementer, der ikke har relevans her.
+		if (omitUMLelementsType.includes(currentElement.Type) == false){
+		
 			var legalSourceElement = getTaggedValueElement(currentElement, "legalSource", "noTag");
 			if (legalSourceElement == "noTag" || legalSourceElement == ""){
 				Session.Output("Ingen 'legalSource' på elementet '" + currentElement.Name + "'.");
@@ -813,17 +860,71 @@ function checkLegal(elements){
 			} else {
 				if (/\bhttps:\/\/www.retsinformation.dk\/eli\/lta/i.test(legalSourceElement) == false && /\bhttp:\/\/www.retsinformation.dk\/eli\/lta/i.test(legalSourceElement) == false){
 					LOGError("Wrong value given on tagged value 'legalSource' on element '" + currentElement.Name );
-					Session.Output("'legalSource' starter ikke med enten \"https://www.retsinformation.dk/eli/lta/\" eller \"http://www.retsinformation.dk/eli/lta/\".");
+					Session.Output("'legalSource' starter ikke med enten \"https://www.retsinformation.dk/eli/lta/\" eller \"http://www.retsinformation.dk/eli/lta/\" på elementet '" + currentElement.Name + "'.");
 					o+=1;
 				} 
+			}
+			
+			// Tjek af attributters "legalSource"
+			for (var k=0; k < currentElement.Attributes.Count; k++){
+				var attr = currentElement.Attributes.GetAt(k);
+				var legalSourceAttr = getTaggedValueAttribute(attr, "legalSource", "noTag");				
+				if (currentElement.Type == "Class" || currentElement.Type == "DataType") {
+						
+					if (/\bhttps:\/\/www.retsinformation.dk\/eli\/lta/i.test(legalSourceAttr) == false && /\bhttp:\/\/www.retsinformation.dk\/eli\/lta/i.test(legalSourceAttr) == false){
+						LOGError("No value given on tagged value 'legalSource' on the attribute '" + attr.Name + "' associated with element '" + currentElement.Name +"'.");
+						Session.Output("'legalSource' på attributten med navn '" + attr.Name + "' tilknyttet elementet '" + currentElement.Name +"' starter ikke med enten \"https://www.retsinformation.dk/eli/lta/\" eller \"http://www.retsinformation.dk/eli/lta/\".");
+						r+=1;
+					} 
+				}
 			}
 		}
 	}
 	
-	if (o == 0){
+	if (o==0 && r==0){
 		Session.Output("OK");
 	}
 }
+
+/**
+ * Check if the tagged value 'source' on model elements is filled out. Flag, if not.
+ *
+ * @param element
+ */
+function checkSource(elements){
+
+	var o = 0;
+	
+	for (var i = 0; i < elements.length; i++) {
+
+		var currentElement = elements[i];
+		//Vi ser lige bort fra elementer, der ikke har relevans her.
+		if (omitUMLelementsType.includes(currentElement.Type) == false){
+		
+			var sourceElement = getTaggedValueElement(currentElement, "source", "noTag");
+			if (sourceElement == "noTag" || sourceElement == ""){
+				Session.Output("(Ingen 'source' på elementet '" + currentElement.Name + "')");
+				o+=1;
+			}  
+			
+			
+			// Tjek af attributters "source"
+			for (var k=0; k < currentElement.Attributes.Count; k++){
+				var attr = currentElement.Attributes.GetAt(k);
+				var sourceAttr = getTaggedValueAttribute(attr, "source", "noTag");				
+				if (currentElement.Type == "Class" || currentElement.Type == "DataType") {
+						
+					if (sourceAttr == "noTag" || sourceAttr == ""){
+						LOGError("No value given on tagged value 'source' on the attribute '" + attr.Name + "' associated with element '" + currentElement.Name +"'.");
+						Session.Output("(Ingen 'source' på attributten med navn '" + attr.Name + "' tilknyttet elementet '" + currentElement.Name +"')");
+					} 
+				}
+			}
+		}
+	}
+}
+
+
 
 /**
  * Check the data types of the attributes. It has to be ISO types.
@@ -987,9 +1088,20 @@ function checkReg(elements)
 	var regcountTil = 0; //no. registreringTil attributes
 	var regcountAkt = 0; //no. registreringsaktør attributes
 	
+	//Hvis ID-listen ikke er blevet populeret tidligere:
+	if (elementIDlist.length == 0){
+
+		for (var i = 0; i < elements.length; i++) {
+			var currentElement = elements[i];
+			if (currentElement.HasStereotype("Grunddata2::DKObjekttype") || currentElement.HasStereotype("Grunddata2::DKDatatype")) {
+				elementIDlist.push(currentElement.ElementID);
+			}
+		}
+	}	
+	
 	for (var i = 0; i < elements.length; i++) {
 		
-		var currentElement = elements[i];		
+		var currentElement = elements[i];
 		
 		if (currentElement.HasStereotype("Grunddata2::DKObjekttype")) {
 			count+=1;
@@ -1124,6 +1236,26 @@ function checkReg(elements)
 }
 
 /**
+ * To count the number of model elements where historikmodel is a tag
+ *
+ * @param element
+ */
+function countHistorikmodel(elements)
+{	
+	var count = 0;
+	for (var i = 0; i < elements.length; i++) {
+		var currentElement = elements[i];
+		if(currentElement.HasStereotype("Grunddata2::DKObjekttype") && currentElement.Type != "Text"){
+			count+=1;
+		}
+	}
+	if (count == 1){
+		Session.Output("Der er " + count + " element i modellen.");
+	} else {Session.Output("Der er " + count + " elementer i modellen.");};
+}
+
+
+/**
  * If a modelelement is labelled with 'bitemporalitet' virkningstid is mandatory. 
  * The function here checks if any attributes exist named 'virkning*'.
  *
@@ -1141,14 +1273,24 @@ function checkVirk(elements)
 	var typefejlFra = 0;
 	var typefejlTil = 0;
 	var typefejlAkt = 0;
+	
+	//Hvis ID-listen ikke er blevet populeret tidligere:
+	if (elementIDlist.length == 0){
 
-	var missing = 0;
+		for (var i = 0; i < elements.length; i++) {
+			var currentElement = elements[i];
+			if (currentElement.HasStereotype("Grunddata2::DKObjekttype") || currentElement.HasStereotype("Grunddata2::DKDatatype")) {
+				elementIDlist.push(currentElement.ElementID);
+			}
+		}
+	}
 	
 	for (var i = 0; i < elements.length; i++) {
 
 		var currentElement = elements[i];
+		
 		var histTag = getTaggedValueElement(currentElement, 'historikmodel', 'noTag');
-		//Session.Output("Tagget: "+histTag + "    Elementet: " +currentElement.Name + "     Stereotypen: " +currentElement.Stereotype)
+
 		if (currentElement.HasStereotype("Grunddata2::DKObjekttype") && histTag == "bitemporalitet") {
 			
 			count+=1;
@@ -1237,37 +1379,37 @@ function checkVirk(elements)
 			}
 			
 			if (rFra == 0){
-				Session.Output("Grunddatatypen '" +currentElement.Name + "' af stereotypen DKObjekttype mangler at modelleres med attributten virkningFra.");
+				Session.Output("Elementet '" +currentElement.Name + "' af stereotypen DKObjekttype mangler at modelleres med attributten virkningFra.");
 			}
 			
 			if (typefejlFra != 0){
-				Session.Output("Egenskaben 'virkningFra' på elementet '"+ currentElement.Name + "' er ikke af datatypen DateTime eller Date.");
+				Session.Output("Attributten 'virkningFra' på elementet '"+ currentElement.Name + "' er ikke af datatypen DateTime eller Date.");
 			}
 			
 			if (multifejlFra != 0){
-				Session.Output("Egenskaben 'virkningFra' på elementet '"+ currentElement.Name + "' har ikke multiplicitet 1.");
+				Session.Output("Attributten 'virkningFra' på elementet '"+ currentElement.Name + "' har ikke multiplicitet 1.");
 			}
 			if (rTil == 0){
-				Session.Output("Grunddatatypen '" +currentElement.Name + "' af stereotypen DKObjekttype mangler at modelleres med attributten virkningTil.");
+				Session.Output("Elementet '" +currentElement.Name + "' af stereotypen DKObjekttype mangler at modelleres med attributten virkningTil.");
 			}
 			
 			if (typefejlTil != 0){
-				Session.Output("Egenskaben 'virkningTil' på elementet '"+ currentElement.Name + "' er ikke af datatypen DateTime eller Date.");
+				Session.Output("Attributten 'virkningTil' på elementet '"+ currentElement.Name + "' er ikke af datatypen DateTime eller Date.");
 			}
 			
 			if (multifejlTil != 0){
-				Session.Output("Egenskaben 'virkningTil' på elementet '"+ currentElement.Name + "' har ikke multiplicitet 1.");
+				Session.Output("Attributten 'virkningTil' på elementet '"+ currentElement.Name + "' har ikke multiplicitet 1.");
 			}
 			if (rAkt == 0){
-				Session.Output("Grunddatatypen '" +currentElement.Name + "' af stereotypen DKObjekttype mangler at modelleres med attributten virkningsaktør.");
+				Session.Output("Elementet '" +currentElement.Name + "' af stereotypen DKObjekttype mangler at modelleres med attributten virkningsaktør.");
 			}
 			
 			if (typefejlAkt != 0){
-				Session.Output("Egenskaben 'virkningsaktør' på elementet '"+ currentElement.Name + "' er ikke af datatypen CharacterString.");
+				Session.Output("Attributten 'virkningsaktør' på elementet '"+ currentElement.Name + "' er ikke af datatypen CharacterString.");
 			}
 			
 			if (multifejlAkt != 0){
-				Session.Output("Egenskaben 'virkningsaktør' på elementet '"+ currentElement.Name + "' har ikke multiplicitet 1.");
+				Session.Output("Attributten 'virkningsaktør' på elementet '"+ currentElement.Name + "' har ikke multiplicitet 1.");
 			}
 			
 			countVirkFra = countVirkFra + rFra
@@ -1283,18 +1425,17 @@ function checkVirk(elements)
 		
 		if (currentElement.HasStereotype("Grunddata2::DKObjekttype") && histTag == "" && currentElement.Type != "Text"){
 			Session.Output("Elementet med navn '" + currentElement.Name + "' har ikke en værdi for tagget 'historikmodel'.");
-			missing += 1;
 		}
 	}
 	
 	if (count == 0){
 		Session.Output("Ingen elementer har angivet 'historikmodel' = bitemporalitet.");
 	}
-	else if (count != 0 && countVirkFra == count && countVirkTil == count && countVirkAkt == count && typefejlFra == 0 && multifejlFra == 0 && typefejlTil == 0 && multifejlTil == 0 && typefejlAkt == 0 && multifejlAkt == 0 && missing == 0){
+	else if (count != 0 && countVirkFra == count && countVirkTil == count && countVirkAkt == count && typefejlFra == 0 && multifejlFra == 0 && typefejlTil == 0 && multifejlTil == 0 && typefejlAkt == 0 && multifejlAkt == 0){
 		if (count == 1){
-			Session.Output(count + " element med 'historikmodel' = bitemporalitet: OK");
-		} else {Session.Output(count + " elementer med 'historikmodel' = bitemporalitet: OK");}		
-	}
+			Session.Output(count + " element med 'historikmodel' = bitemporalitet: Element OK");
+		} else {Session.Output(count + " elementer med 'historikmodel' = bitemporalitet: Elementer OK");}		
+	} else {Session.Output("Fejlbehæftede elementer med angivet bitemporalitet. Optælling ikke mulig.");}
 }
 
 /**
@@ -1310,12 +1451,11 @@ function historikReg(elements)
 	var countVirkTil = 0; //no. virkningTil attributes
 	var countVirkAkt = 0; //no. virkningsaktør attributes
 
-	
 	for (var i = 0; i < elements.length; i++) {
 
 		var currentElement = elements[i];
 		var histTag = getTaggedValueElement(currentElement, 'historikmodel', 'noTagValue');
-		//Session.Output("Tagget: "+histTag + "    Elementet: " +currentElement.Name + "     Stereotypen: " +currentElement.Stereotype)
+
 		if (currentElement.HasStereotype("Grunddata2::DKObjekttype") && histTag == "registreringshistorik"){
 			count+=1;
 			var rFra = 0;
@@ -1379,9 +1519,9 @@ function historikReg(elements)
 	}
 	else if (count != 0 && countVirkFra == 0 && countVirkTil == 0 && countVirkAkt == 0){
 		if (count == 1){
-			Session.Output(count + " element med 'historikmodel' = registreringshistorik: OK");
-		} else {Session.Output(count + " elementer med 'historikmodel' = registreringshistorik: OK");}		
-	}
+			Session.Output(count + " element med 'historikmodel' = registreringshistorik: Element OK");
+		} else {Session.Output(count + " elementer med 'historikmodel' = registreringshistorik: Elementer OK");}		
+	} else {Session.Output("Fejlbehæftede elementer med angivet registreringshistorik. Optælling ikke mulig.");}
 }
 
 /**

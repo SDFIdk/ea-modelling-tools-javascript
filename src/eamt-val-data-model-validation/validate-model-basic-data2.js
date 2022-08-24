@@ -43,7 +43,7 @@ function main() {
 		Session.Output(" ");
 		Session.Output("Regel 4.4: Angiv meningsfyldte navne og beskrivelser for modellen");
 		modeltags1(selectedPackage);
-		Session.Output("Beskrivelser og titler bør kontrolleres manuelt, for at sikre meningsfyldt indhold.");
+		Session.Output("Beskrivelser og titler bør kontrolleres manuelt for at sikre meningsfyldt indhold.");
 		
 		Session.Output(" ");
 		Session.Output("Regel 4.5: Angiv identifikation af modeller");
@@ -64,7 +64,7 @@ function main() {
 		Session.Output(" ");
 		Session.Output("Regel 4.9: Modellen skal godkendes");
 		modeltags6(selectedPackage);
-		Session.Output("Efter endt kontrol og konformanstjek, bør modellens status tilrettes.");
+		Session.Output("Efter endt kontrol og konformanstjek bør modellens status tilrettes.");
 	
 		Session.Output(" ");
 		Session.Output("Regel 4.10: Angiv modellens modelstatus");	
@@ -95,7 +95,7 @@ function main() {
 		Session.Output(" ");
 		Session.Output("Regel 5.3: Angiv termer i et naturligt sprog");
 		sprog(elements);
-		Session.Output("Elementernes 'prefLabelValue' bør tjekkes manuelt for at sikre meningsfyldt indhold.");
+		Session.Output("Elementernes 'prefLabel (da)' bør tjekkes manuelt for at sikre meningsfyldt indhold.");
 
 		Session.Output(" ");
 		Session.Output("Regel 5.4: Brug standardiserede konventioner for angivelse af navne");
@@ -116,6 +116,7 @@ function main() {
 		Session.Output(" ");
 		Session.Output("Regel 5.8: Angiv modelelementers lovgrundlag");
 		checkLegal(elements);
+		checkSource(elements);
 		Session.Output("Elementernes 'legalSource' bør tjekkes manuelt for at sikre meningsfyldt indhold.");
 		
 		Session.Output(" ");
@@ -136,6 +137,7 @@ function main() {
 		
 		Session.Output(" ");
 		Session.Output("Regel 6.3: Grunddataobjekttyper bør understøtte virkningstid");
+		countHistorikmodel(elements);
 		checkVirk(elements);
 		historikReg(elements);
 		
