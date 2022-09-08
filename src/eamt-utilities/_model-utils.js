@@ -154,3 +154,24 @@ function getNonInHeritedPropertiesThatAreAssociationEnds(element) {
 	}
 	return properties;
 }
+
+/**
+ * @return {Array<String>} array containing the [UML classifiers](https://www.uml-diagrams.org/classifier.html) used in data modelling.
+ */
+function getDataModellingClassifiers() {
+	/* 
+	 * Interface added, as interfaces occur in TC 211 abstract schemas.
+	 * Interfaces are not used in regular data modelling.
+	 */
+	return Array.of("Class", "DataType", "Enumeration", "Interface");
+}
+
+/**
+ * @param connector {EA.Connector}
+ * @return {boolean} whether the given connector is a kind of association
+ * (according to the UML metamodel, aggregations and compositions are kinds of associations)
+ */
+function isConnectorKindOfAssociation(connector) {
+	// in EA: a composition has Type aggregation (and subtype strong)
+	return (connector.Type == "Association" || connector.Type == "Aggregation");
+}

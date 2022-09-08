@@ -98,6 +98,39 @@ This script uses templates concept_model_rdf.ftlx and concept_model_asciidoc.ftl
 
 
 
+## eamt-profile-management
+
+Scripts that assist in managing profiles of data models.
+
+### chg-add-new-profile
+
+Adds a new profile to model elements, if not yet present.
+
+Adds a new profile to either all relevant elements and their properties in the selected package
+or to the selected element and its properties.
+
+
+
+### chg-add-profiles-tag
+
+Prepare a model for profiling.
+
+Add tagged value "profiles" to either all relevant elements and their properties in the selected package
+or to the selected element and its properties, if that tagged value is not yet present.
+
+The value of tagged value "profiles" is set to an empty string, if the tagged value is not yet present.
+
+
+
+### chg-remove-profiles-tag
+
+Remove all information regarding profiles from the model.
+
+Remove tagged value "profiles" from all relevant model elements of the
+selected package.
+
+
+
 ## eamt-script-management
 
 Scripts used for keeping scripts developed in EA under version control.
