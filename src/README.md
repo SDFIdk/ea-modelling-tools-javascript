@@ -170,13 +170,6 @@ Utility functions.
 
 Validation scripts to validate the model against for instance the basic data model rules version 2. 
 
-### stereotype
-
-
-⚠️ missing description
-
-
-
 ### validate-model-basic-data2
 
 Validate a model against the basic data model rules version 2.
@@ -186,13 +179,6 @@ Script to validate any model against the basic data model rules version 2
 
 Select a model in the Project Browser and run this script in order to validate it.
 
-
-
-
-### version-status-modified
-
-
-⚠️ missing description
 
 
 
