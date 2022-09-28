@@ -4,31 +4,35 @@
 !INC eamt-utilities._shell-application-utils
 !INC eamt-utilities._constants
 !INC eamt-utilities._tagged-values-utils
+!INC eamt-utilities._model-utils
 
-/**
- * Change the stereotypes on package's, element's, attributes and roles from Grundata 1.2 uml-profile to the Grunddata 2.0 uml-profile.
- * Copies data for Grundata 1.2 tags to Grunddata 2.0 when posible
- *
- * Requirement : Grunddata2MDG.xml needs to be installed for the script to work.
- *
- * Not all mandatory Grunddata 2.0 tags can be filled out from Grunddata 1.2 tags, so to be Grunddata 2.0 compliant further Grunddata 2.0 tags needs to be set.
- *
- * @summary Upgrade a model from model rules	"modelregler for Grunddata version 1.2" 
- *							  to model rules	"modelregler for Grunddata version 2.0"
- */
+
  
 const connectorSet = new Set();
 var elementNumber = 0;
 var attributeNumber = 0;
 var enumNumber = 0;
 var roleNumber = 0;
+var diagramNumber = 0;
 
+/**
+ * Change the stereotypes on package's, element's, attributes and roles from Grundata 1.2 uml-profile to the Grunddata 2.0 uml-profile.
+ * Copies data for Grundata 1.2 tags to Grunddata 2.0 when posible
+ * Diagrams are updated to to Grunddata version 2.0 MDG
+ *
+ * Requirement : Grunddata2MDG.xml needs to be installed for the script to work.
+ *
+ * Not all mandatory Grunddata 2.0 tags can be filled out from Grunddata 1.2 tags, so for a model to be Grunddata 2.0 compliant further Grunddata 2.0 tags needs to be set.
+ *
+ * @summary Upgrade a model from model rules	"modelregler for Grunddata version 1.2" 
+ *							  to model rules	"modelregler for Grunddata version 2.0"
+ */
 function main() {
 	Repository.EnsureOutputVisible("Script");
 	// Get the currently selected package in the tree to work on
 	var packageMain as EA.Package;
 	packageMain = Repository.GetTreeSelectedPackage();
-	if (packageMain != null && packageMain.ParentID != 0) 
+	if (packageMain != null && packageMain.ParentID != 0)
 	{
 		var packageElement as EA.Element;
 		packageElement = packageMain.Element;
@@ -39,6 +43,8 @@ function main() {
 		
 		packageElement.Update;
 		setGrunddata2PackageTags(packageElement)
+		
+		upgradeDiagrams(packageMain /* EA.Package */);
 		
 		var elements as EA.Collection;
 		var currentElement as EA.Element;
@@ -136,7 +142,10 @@ function main() {
 			}
 		}
 		
+		
+		
 		Session.Output("\nSummary" );
+		Session.Output("Changed MDG on "+ diagramNumber + " diagrams" );
 		Session.Output("Changed stereotype on "+ elementNumber + " elements" );
 		Session.Output("Changed stereotype on "+ attributeNumber + " attributes" );
 		Session.Output("Changed tags on "+ enumNumber + " enums" );
@@ -429,6 +438,69 @@ function setGrunddata2PackageTags(currentPackageElement)
 	deleteTaggedValueElement(currentPackageElement, "modeldomæne");
 	
 	deleteTaggedValueElement(currentPackageElement, "forvaltingsopgave");
+}
+
+
+/**	
+* Checks if a context diagram exist, and if not creates it with the most basic content
+*/
+function upgradeDiagrams(package /* EA.Package */) { 
+	var diagrams = getDiagramsOfPackageAndSubpackages(package);
+	var diagram as EA.Diagram;
+	var diagramId;
+	var newStyleEx;
+	var MDGDgm;
+
+	
+	for (var i in diagrams)
+	{
+		diagram = diagrams[i];
+		
+		//Session.Output("diagram Style1: " + diagram.StyleEx + " \n" );
+		diagramId = diagram.DiagramID;
+		MDGDgm = false;
+			
+		const styleExArray = diagram.StyleEx.split(";");
+			
+		for (var j = 0 ; j < styleExArray.length ; j++)
+		{	
+			var styleExValue = styleExArray[j];
+			if(styleExValue.includes("MDGDgm="))
+			{
+				MDGDgm = true;
+				//Session.Output("styleExArray " +j + " : "+ styleExArray[j]  );
+				if(diagram.Type == "Package")
+				{
+					styleExArray[j]="MDGDgm=Grunddatadiagrammer::Pakkediagram";
+				}
+				else
+				{
+					if(diagram.Name.includes("Oversigt"))
+					{	
+						styleExArray[j]="MDGDgm=Grunddatadiagrammer::Oversigtsdiagram";
+					}
+					else
+					{
+						styleExArray[j]="MDGDgm=Grunddatadiagrammer::Objekttypediagram";
+					}
+				}
+			}
+		}
+		
+		if (MDGDgm == false)
+		{
+			styleExArray.push("MDGDgm=Grunddatadiagrammer::Objekttypediagram");
+		}
+		
+		newStyleEx = styleExArray.join(";");
+		//Session.Output("diagram Style2: " + newStyleEx + " \n" );
+			
+		Repository.Execute("UPDATE t_diagram set StyleEx='"+ newStyleEx +"' where Diagram_ID=" + diagramId + ";");
+		
+		Session.Output("MDG for diagram updated : " + diagram.Name );
+		diagramNumber++;
+	}
+
 }
 
 main();
