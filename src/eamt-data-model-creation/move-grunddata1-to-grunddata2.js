@@ -42,19 +42,54 @@ function main() {
 		Session.Output("Upgrade model "+ packageElement.Name + " to modelregler for Grunddata version 2.0" );
 		
 		packageElement.Update;
-		setGrunddata2PackageTags(packageElement)
+		setGrunddata2PackageTags(packageElement);
 		
 		upgradeDiagrams(packageMain /* EA.Package */);
 		
 		var elements as EA.Collection;
 		var currentElement as EA.Element;
 		
-		elements = packageMain.Elements;
-		for (var i = 1 ; i < elements.Count ; i++)
+		changeElementStereotypes(packageMain, packageMain);
+		
+		var packages as EA.Collection;
+		var subpackage as EA.Package;
+		packages = packageMain.Packages;
+		for (var i = 0 ; i < packages.Count ; i++)
+		{
+			subpackage = packages.GetAt(i);	
+			changeElementStereotypes(subpackage, packageMain);
+		}
+		
+		
+		Session.Output("\nSummary" );
+		Session.Output("Changed MDG on "+ diagramNumber + " diagrams" );
+		Session.Output("Changed stereotype on "+ elementNumber + " elements" );
+		Session.Output("Changed stereotype on "+ attributeNumber + " attributes" );
+		Session.Output("Changed tags on "+ enumNumber + " enums" );
+		Session.Output("Changed stereotype on "+ roleNumber + " roles" );
+		
+		Repository.RefreshModelView(packageMain.PackageID);
+				
+	} else 
+	{
+		LOGError(MESSAGE_PACKAGE_REQUIRED);
+	}
+}
+
+
+/**	
+* Copies grunddata element tags to a temporary copy
+*
+*/
+function changeElementStereotypes(currentPackage, packageMain)
+{
+		elements = currentPackage.Elements;
+		
+		for (var i = 0 ; i < elements.Count ; i++)
 		{
 			currentElement = elements.GetAt(i);
 			
-			//Session.Output("Change Stereotype on: " + currentElement.Name + "Type: " + currentElement.Type + "Stereotype: " + currentElement.FQStereotype);
+			Session.Output("Change Stereotype on: " + currentElement.Name + "Type: " + currentElement.Type + "Stereotype: " + currentElement.FQStereotype);
 			if(currentElement.FQStereotype == "Grunddata::DKObjekttype" || currentElement.FQStereotype == "Geodata::DKFeaturetype" || currentElement.FQStereotype == "Geodata::DKObjekttype")
 			{
 				Session.Output("\nChange stereotype on: " + currentElement.Name );
@@ -141,23 +176,14 @@ function main() {
 				deleteTaggedValueElement(currentElement, "alternativtNavn");
 			}
 		}
-		
-		
-		
-		Session.Output("\nSummary" );
-		Session.Output("Changed MDG on "+ diagramNumber + " diagrams" );
-		Session.Output("Changed stereotype on "+ elementNumber + " elements" );
-		Session.Output("Changed stereotype on "+ attributeNumber + " attributes" );
-		Session.Output("Changed tags on "+ enumNumber + " enums" );
-		Session.Output("Changed stereotype on "+ roleNumber + " roles" );
-		
-		Repository.RefreshModelView(packageMain.PackageID);
-				
-	} else 
-	{
-		LOGError(MESSAGE_PACKAGE_REQUIRED);
-	}
+	
+	
+	
+	
 }
+
+
+
 
 /**	
 * Copies grunddata element tags to a temporary copy
@@ -442,7 +468,7 @@ function setGrunddata2PackageTags(currentPackageElement)
 
 
 /**	
-* Checks if a context diagram exist, and if not creates it with the most basic content
+* Upgade diagrams to Modelregler v2.0 MDG
 */
 function upgradeDiagrams(package /* EA.Package */) { 
 	var diagrams = getDiagramsOfPackageAndSubpackages(package);
