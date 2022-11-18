@@ -181,4 +181,16 @@ Select a model in the Project Browser and run this script in order to validate i
 
 
 
+### validate-model-profile-basic-data2
+
+Validate a model against the basic data model rules version 2.
+
+Script to validate any model against the basic data model rules version 2 for specific profile
+(http://grunddatamodel.datafordeler.dk/modelregler/grunddatamodelregler.html).
+
+Select a model in the Project Browser, edit the profile in the script and run this script in order to validate model.
+
+
+
+
 
