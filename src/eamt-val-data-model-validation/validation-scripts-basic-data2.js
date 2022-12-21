@@ -3,7 +3,7 @@
  */
 const upperCamel = ["Class", "Association class", "DataType", "Enumeration"]; 
 const lowerCamel = ["Aggregation", "Association", "Role", "Attribute"]; 
-const allowedUMLelements = ["Aggregation", "Class", "Generalization", "Association class", 'Association', "Composition", "Role", "Attribute", "DataType", "Enumeration", "Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"]; 
+const allowedUMLelements = ["Aggregation", "Class", "Generalization", "Association class", 'Association', "Composition", "Role", "Attribute", "DataType", "Enumeration", "Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary", "Usage"]; 
 const omitUMLelementsType = ["ProxyConnector","Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"];
 const allowedstereotypesModel = ["Grunddata2::DKDomænemodel", "Grunddata2::DKKlassifikationsmodel"];
 const allowedstereotypesElement = ["Grunddata2::DKObjekttype", "Grunddata2::DKDatatype","Grunddata2::DKEnumeration", "Grunddata2::DKKodeliste"];
@@ -379,8 +379,26 @@ function checkStereotypeConnectorEnd(element){
 }
 
 /**
+ * Script to check if a tag on a package exists. If it does, the value of the tag is returned.
+ *
+ * @param package, tag, default value
+ * @return the tagged value
+ */
+function checkTagPackage(package, tag, defaultval) {
+	var result=getTaggedValueElement(package.Element, tag, defaultval);
+	if (result==defaultval){
+		LOGError("No tag called "+ tag + " on package " + package.Name);
+		Session.Output("Tagget '" + tag + "' på pakken '" + package.Name+ "' findes ikke.");
+		return result;
+	} else { 
+		LOGTrace("Value of '" + tag + "' on package '" + package.Name + ": " + result);
+		return result;
+	}
+}
+
+/**
  * Validate if the tagged values of the selected model follows the basic data model rules version 2.
- * List of tagged values [title (da), description (da), language, modelScope]
+ * List of tagged values [title (da), description (da)]
  *
  * @param package {EA.Package}
  * @summary Validation of model tagged values
@@ -389,18 +407,32 @@ function modeltags1(selectedPackage){
 	
 	var title = checkTagPackage(selectedPackage, "title (da)", "noTag");
 	var desc = checkTagPackage(selectedPackage, "description (da)", "noTag");
+	var j = 0
+	
+	if (title == null || title == "" || title == "noTag"){
+		LOGError("No value given on tagged value 'title (da)' on package " + selectedPackage.Name);
+		Session.Output("Pakken med navn '" + selectedPackage.Name + "' mangler 'title (da)'.");
+	} else {j += 1}
+	if (desc == null || desc == "" || desc == "noTag"){
+		LOGError("No value given on tagged value 'description (da)' on package " + selectedPackage.Name);
+		Session.Output("Pakken med navn '" + selectedPackage.Name + "' mangler 'description (da)'.");
+	} else {j += 1}	
+	if (j==2) {Session.Output("OK")}	
+}
+
+/**
+ * Validate if the tagged values of the selected model follows the basic data model rules version 2.
+ * List of tagged values [language, modelScope]
+ *
+ * @param package {EA.Package}
+ * @summary Validation of model tagged values
+ */
+function modeltags1_2(selectedPackage){
+	
 	var lang = checkTagPackage(selectedPackage, "language", "noTag");
 	var mscope = checkTagPackage(selectedPackage, "modelScope", "noTag");
 	var j = 0
 	
-	if (title == null || title == ""){
-		LOGError("No value given on tagged value 'title (da)' on package " + selectedPackage.Name);
-		Session.Output("Pakken med navn '" + selectedPackage.Name + "' mangler 'title (da)'.");
-	} else {j += 1}
-	if (desc == null || desc == ""){
-		LOGError("No value given on tagged value 'description (da)' on package " + selectedPackage.Name);
-		Session.Output("Pakken med navn '" + selectedPackage.Name + "' mangler 'description (da)'.");
-	} else {j += 1}	
 	if (lang != "da"){
 		LOGError("Wrong value given on tagged value 'language' on package " + selectedPackage.Name);
 		Session.Output("Pakken med navn '" + selectedPackage.Name + "' skal have udfyldt 'language' med \"da\".");
@@ -409,8 +441,9 @@ function modeltags1(selectedPackage){
 		LOGError("Wrong value given on tagged value 'modelScope' on package " + selectedPackage.Name);
 		Session.Output("Pakken med navn '" + selectedPackage.Name + "' skal have udfyldt 'model scope' med \"application model\".");
 	} else {j += 1}
-	if (j==4) {Session.Output("OK")}	
+	if (j==2) {Session.Output("OK")}	
 }
+
 
 /**
  * Validate if the tagged values of the selected model follows the basic data model rules version 2.
@@ -575,23 +608,6 @@ function modeltags8(selectedPackage){
 	if (j==2) {Session.Output("OK");}
 }
 
-/**
- * Script to check if a tag on a package exists. If it does, the value of the tag is returned.
- *
- * @param package, tag, default value
- * @return the tagged value
- */
-function checkTagPackage(package, tag, defaultval) {
-	var result=getTaggedValueElement(package.Element, tag, defaultval);
-	if (result==defaultval){
-		LOGError("No tag called "+ tag + " on package " + package.Name);
-		Session.Output("Tagget '" + tag + "' på pakken '" + package.Name+ "' findes ikke.");
-		return result;
-	} else { 
-		LOGTrace("Value of '" + tag + "' on package '" + package.Name + ": " + result);
-		return result;
-	}
-}
 
 /**
  * Script to check the model element tagged value 'URI'. It has to follow the basic data model rules version 2.
@@ -645,7 +661,7 @@ function identifikator(elements)
  *
  * @param element
  */
-function sprog(elements)
+function prefLabel(elements)
 {	
 	var q = 0;
 	var r = 0;

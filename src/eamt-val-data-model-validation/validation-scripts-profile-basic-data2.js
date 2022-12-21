@@ -3,7 +3,7 @@
  */
 const upperCamel = ["Class", "Association class", "DataType", "Enumeration"]; 
 const lowerCamel = ["Aggregation", "Association", "Role", "Attribute"]; 
-const allowedUMLelements = ["Aggregation", "Class", "Generalization", "Association class", 'Association', "Composition", "Role", "Attribute", "DataType", "Enumeration", "Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"]; 
+const allowedUMLelements = ["Aggregation", "Class", "Generalization", "Association class", 'Association', "Composition", "Role", "Attribute", "DataType", "Enumeration", "Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary","Usage"]; 
 const omitUMLelementsType = ["ProxyConnector","Text", "Note", "Notetext", "NoteLink", "Dependency", "Boundary"];
 const allowedstereotypesModel = ["Grunddata2::DKDomænemodel", "Grunddata2::DKKlassifikationsmodel"];
 const allowedstereotypesElement = ["Grunddata2::DKObjekttype", "Grunddata2::DKDatatype","Grunddata2::DKEnumeration", "Grunddata2::DKKodeliste"];
@@ -671,7 +671,7 @@ function identifikator(elements,profile)
  *
  * @param element
  */
-function sprog(elements,profile)
+function prefLabel(elements,profile)
 {	
 	var q = 0;
 	var r = 0;

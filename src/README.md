@@ -192,5 +192,15 @@ Select a model in the Project Browser, edit the profile in the script and run th
 
 
 
+### validate-model-simple
+
+Validate a model against the simplest rules.
+
+Script to validate any model against the simplest rules for modelling in SDFI 
+
+Select a model in the Project Browser and run this script in order to validate it.
+
+
+
 
 

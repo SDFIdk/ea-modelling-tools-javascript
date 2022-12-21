@@ -26,6 +26,8 @@ function main() {
 	if (selectedPackage != null && selectedPackage.ParentID != 0) {
 		Session.Output(" ");
 		Session.Output("Dette er valideringsrapporten for modellen '" + selectedPackage.Name + "' udarbejdet af Modelsekretariatet d. " + now.getDate() + "/" + (now.getMonth() + 1) + " " + now.getFullYear() + ".");
+		Session.Output(" ");
+		Session.Output("OBS: Dette script validerer KUN for modeller lavet på MDG'en Grunddata2!");
 		Session.Output("________________________________________________________________________________________________________________")
 		
 		Session.Output(" ");
@@ -41,8 +43,11 @@ function main() {
 		stereotypes(selectedPackage,elements);
 		
 		Session.Output(" ");
-		Session.Output("Regel 4.4: Angiv meningsfyldte navne og beskrivelser for modellen");
+		Session.Output("Regel 4.4: Angiv meningsfyldte navne og beskrivelser for modellen");		
+		Session.Output("title (da) og description (da): ");
 		modeltags1(selectedPackage);
+		Session.Output("language og modelScope: ");
+		modeltags1_2(selectedPackage);
 		Session.Output("Beskrivelser og titler bør kontrolleres manuelt for at sikre meningsfyldt indhold.");
 		
 		Session.Output(" ");
@@ -94,7 +99,7 @@ function main() {
 		
 		Session.Output(" ");
 		Session.Output("Regel 5.3: Angiv termer i et naturligt sprog");
-		sprog(elements);
+		prefLabel(elements);
 		Session.Output("Elementernes 'prefLabel (da)' bør tjekkes manuelt for at sikre meningsfyldt indhold.");
 
 		Session.Output(" ");
