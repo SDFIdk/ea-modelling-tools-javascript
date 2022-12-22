@@ -83,6 +83,34 @@ function setTaggedValueElement(theElement, taggedValueName, taggedValueValue) {
 /**
  * @param theElement {EA.Element}
  * @param taggedValueName {string}
+ * @return {boolean}
+ */
+function hasElementTaggedValue(element, taggedValueName) {
+	if (theElement != null && taggedValueName.length > 0) {
+		var taggedValue as EA.TaggedValue;
+		var taggedValues as EA.Collection;
+
+		taggedValue = null;
+		taggedValues = theElement.TaggedValues;
+
+		for (var i = 0; i < taggedValues.Count; i++) {
+			if (taggedValues.GetAt(i).Name == taggedValueName) {
+				taggedValue = taggedValues.GetAt(i);
+				break;
+			}
+		}
+
+		if (taggedValue == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+}
+
+/**
+ * @param theElement {EA.Element}
+ * @param taggedValueName {string}
  */
 function changeTaggedValueElementFromShortToLong(theElement, taggedValueName) {
 	if (theElement != null && taggedValueName.length > 0) {
@@ -110,6 +138,40 @@ function changeTaggedValueElementFromShortToLong(theElement, taggedValueName) {
 				theElement.TaggedValues.Refresh();
 			}
 		}
+	}
+}
+
+/**
+ * Adds a new tagged value with the given name and value to the element. If the tagged
+ * value already exist, it is not updated.
+ *
+ * @param theElement {EA.Element}
+ * @param taggedValueName {string}
+ * @param taggedValueValue {string}
+ */
+function addTaggedValueToElement(theElement, taggedValueName, taggedValueValue) {
+	if (theElement != null && taggedValueName.length > 0) {
+		var taggedValue as EA.TaggedValue;
+		var taggedValues as EA.Collection;
+
+		taggedValue = null;
+		taggedValues = theElement.TaggedValues;
+
+		for (var i = 0; i < taggedValues.Count; i++) {
+			if (taggedValues.GetAt(i).Name == taggedValueName) {
+				taggedValue = taggedValues.GetAt(i);
+				break;
+			}
+		}
+
+		if (taggedValue == null) {
+			taggedValue = theElement.TaggedValues.AddNew(taggedValueName, truncateTaggedValueValueIfNeeded(taggedValueValue));
+
+		} else {
+			LOGDebug("Tagged value " + taggedValueName + " is already present on " + theElement.Name);
+		}
+		taggedValue.Update();
+		theElement.TaggedValues.Refresh();
 	}
 }
 
@@ -206,6 +268,34 @@ function setTaggedValueAttribute(attribute, taggedValueName, taggedValueValue) {
 /**
  * @param attribute {EA.Attribute}
  * @param taggedValueName {string}
+ * @return {boolean}
+ */
+function hasAttributeTaggedValue(attribute, taggedValueName) {
+	if (attribute != null && taggedValueName.length > 0) {
+		var taggedValue as EA.AttributeTag;
+		var taggedValues as EA.Collection;
+
+		taggedValue = null;
+		taggedValues = attribute.TaggedValues;
+
+		for (var i = 0; i < taggedValues.Count; i++) {
+			if (taggedValues.GetAt(i).Name == taggedValueName) {
+				taggedValue = taggedValues.GetAt(i);
+				break;
+			}
+		}
+
+		if (taggedValue == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+}
+
+/**
+ * @param attribute {EA.Attribute}
+ * @param taggedValueName {string}
  */
 function changeTaggedValueAttributeFromShortToLong(attribute, taggedValueName) {
 	if (attribute != null && taggedValueName.length > 0) {
@@ -233,6 +323,43 @@ function changeTaggedValueAttributeFromShortToLong(attribute, taggedValueName) {
 				attribute.TaggedValues.Refresh();
 			}
 		}
+	}
+}
+
+/**
+ * Adds a new tagged value with the given name and value to the attribute. If the tagged
+ * value already exist, it is not updated.
+ *
+ * @param attribute {EA.Attribute}
+ * @param taggedValueName {string}
+ * @param taggedValueValue {string}
+ */
+function addTaggedValueToAttribute(attribute, taggedValueName, taggedValueValue) {
+	if (attribute != null && taggedValueName.length > 0) {
+		var taggedValue as EA.AttributeTag;
+		var taggedValues as EA.Collection;
+
+		taggedValue = null;
+		taggedValues = attribute.TaggedValues;
+
+		for (var i = 0; i < taggedValues.Count; i++) {
+			if (taggedValues.GetAt(i).Name == taggedValueName) {
+				taggedValue = taggedValues.GetAt(i);
+				break;
+			}
+		}
+
+		if (taggedValue == null) {
+			taggedValue = attribute.TaggedValues.AddNew(taggedValueName, truncateTaggedValueValueIfNeeded(taggedValueValue));
+		} else {
+			if (taggedValue.Value == "<memo>") {
+				taggedValue.Notes = taggedValueValue;
+			} else {
+				LOGDebug("Tagged value " + taggedValueName + " is already present on " + attribute.Name);
+			}
+		}
+		taggedValue.Update();
+		attribute.TaggedValues.Refresh();
 	}
 }
 
@@ -365,6 +492,36 @@ function setTaggedValueConnectorEnd(connector, taggedValueName, taggedValueValue
  * @param connector {EA.Connector}
  * @param taggedValueName {string}
  * @param source {boolean}
+ * @return {boolean}
+ */
+function hasConnectorEndTaggedValue(connector, taggedValueName, source) {
+	var result = defaultValue;
+	if (connector != null && taggedValueName.length > 0) {
+		var taggedValues as EA.Collection;
+		var taggedValue as EA.RoleTag;
+		if (source) {
+			taggedValues = connector.ClientEnd.TaggedValues;
+		} else {
+			taggedValues = connector.SupplierEnd.TaggedValues;
+		}
+		for (var i = 0; i < taggedValues.Count; i++) {
+			if (taggedValues.GetAt(i).Tag == taggedValueName) {
+				taggedValue = taggedValues.GetAt(i);
+				break;
+			}
+		}
+		if (taggedValue = null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+}
+
+/**
+ * @param connector {EA.Connector}
+ * @param taggedValueName {string}
+ * @param source {boolean}
  */
 function changeTaggedValueConnectorEndFromShortToLong(connector, taggedValueName, source) {
 	if (connector != null && taggedValueName.length > 0) {
@@ -395,6 +552,44 @@ function changeTaggedValueConnectorEndFromShortToLong(connector, taggedValueName
 				taggedValues.Refresh();
 			}
 		}
+	}
+}
+
+/**
+ * Adds a new tagged value with the given name and value to the source or target
+ * of te given connector. If the tagged value already exist, it is not updated.
+ *
+ * @param connector {EA.Connector}
+ * @param taggedValueName {string}
+ * @param taggedValueValue {string}
+ * @param source {boolean}
+ */
+function addTaggedValueToConnectorEnd(connector, taggedValueName, taggedValueValue, source) {
+	if (connector != null && taggedValueName.length > 0) {
+		var taggedValues as EA.Collection;
+		if (source) {
+			taggedValues = connector.ClientEnd.TaggedValues;
+		} else {
+			taggedValues = connector.SupplierEnd.TaggedValues;
+		}
+
+		var taggedValue as EA.RoleTag;
+		taggedValue = null;
+
+		for (var i = 0; i < taggedValues.Count; i++) {
+			if (taggedValues.GetAt(i).Tag == taggedValueName) {
+				taggedValue = taggedValues.GetAt(i);
+				break;
+			}
+		}
+
+		if (taggedValue == null) {
+			taggedValue = taggedValues.AddNew(taggedValueName, truncateTaggedValueValueIfNeeded(taggedValueValue));
+		} else {
+			LOGDebug("Tagged value " + taggedValueName + " is already present on the " + (source ? "source" : "target") + " end of " + connector.Name);
+		}
+		taggedValue.Update();
+		taggedValues.Refresh();
 	}
 }
 
