@@ -15,8 +15,11 @@ starts with an underscore, e.g. `_model-utils`.
 In order to be able to create a meaningful 
 [README file containing the documentation of all scripts](src/README.md), 
 each executable script must be documented using 
-[JSdoc](https://en.wikipedia.org/wiki/JSDoc). The following code 
+[JSDoc](https://en.wikipedia.org/wiki/JSDoc). The following code 
 snippet illustrates this.
+
+Note that the JSDoc comment must be placed immediately before the function
+being documented. It is good practice to document all the methods present in a script, however, the JSDoc comment that is exported to src/README.md is the comment that documents the function that is called in the script.
 
 ```js
 
