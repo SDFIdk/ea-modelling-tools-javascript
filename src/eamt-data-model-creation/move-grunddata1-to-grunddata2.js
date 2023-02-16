@@ -93,7 +93,7 @@ function changeElementStereotypes(currentPackage, packageMain)
 			if(currentElement.FQStereotype == "Grunddata::DKObjekttype" || currentElement.FQStereotype == "Geodata::DKFeaturetype" || currentElement.FQStereotype == "Geodata::DKObjekttype")
 			{
 				Session.Output("\nChange stereotype on: " + currentElement.Name );
-				copyGrunddataTags(currentElement)
+				copyGrunddataTags(currentElement);
 				currentElement.StereotypeEx = "Grunddata2::DKObjekttype";
 				currentElement.Update();
 				changeAttributeTags(currentElement);
@@ -103,7 +103,7 @@ function changeElementStereotypes(currentPackage, packageMain)
 			else if(currentElement.FQStereotype == "Grunddata::DKKodeliste")
 			{
 				Session.Output("\nChange stereotype on: " + currentElement.Name );
-				copyGrunddataTags(currentElement)
+				copyGrunddataTags(currentElement);
 				currentElement.StereotypeEx = "Grunddata2::DKKodeliste";
 				currentElement.Update();
 				elementNumber++;
@@ -111,7 +111,7 @@ function changeElementStereotypes(currentPackage, packageMain)
 			else if(currentElement.FQStereotype == "Grunddata::DKDatatype")
 			{
 				Session.Output("\nChange stereotype on: " + currentElement.Name );
-				copyGrunddataTags(currentElement)
+				copyGrunddataTags(currentElement);
 				currentElement.StereotypeEx = "Grunddata2::DKDatatype";
 				currentElement.Update();
 				changeAttributeTags(currentElement);
@@ -160,18 +160,18 @@ function changeElementStereotypes(currentPackage, packageMain)
 				deleteTaggedValueElement(currentElement, "description_copy");
 				deleteTaggedValueElement(currentElement, "note");
 				
-				var description = getTaggedValueElement(currentElement, "legalSource_copy", "");
-				setTaggedValueElement(currentElement, "legalSource", description);
+				var legalSource = getTaggedValueElement(currentElement, "legalSource_copy", "");
+				setTaggedValueElement(currentElement, "legalSource", legalSource);
 				deleteTaggedValueElement(currentElement, "legalSource_copy");
 				deleteTaggedValueElement(currentElement, "lovgrundlag");
 				
-				var description = getTaggedValueElement(currentElement, "example_copy", "");
-				setTaggedValueElement(currentElement, "example (da)", description);
+				var example = getTaggedValueElement(currentElement, "example_copy", "");
+				setTaggedValueElement(currentElement, "example (da)", example);
 				deleteTaggedValueElement(currentElement, "example_copy");
 				deleteTaggedValueElement(currentElement, "eksempel");
 				
-				var description = getTaggedValueElement(currentElement, "alternativLabel_copy", "");
-				setTaggedValueElement(currentElement, "altLabel (da)", description);
+				var altLabel = getTaggedValueElement(currentElement, "alternativLabel_copy", "");
+				setTaggedValueElement(currentElement, "altLabel (da)", altLabel);
 				deleteTaggedValueElement(currentElement, "alternativLabel_copy");
 				deleteTaggedValueElement(currentElement, "alternativtNavn");
 			}
@@ -192,10 +192,14 @@ function changeElementStereotypes(currentPackage, packageMain)
 function copyGrunddataTags(currentElement)
 {
 	var definition = getTaggedValueElement(currentElement, "definition", "");
-	setTaggedValueElement(currentElement, "definition_copy", definition);
+	var newdefinition = upgradeStrings(definition);
+	setTaggedValueElement(currentElement, "definition_copy", newdefinition);
 	
 	var description = getTaggedValueElement(currentElement, "note", "");
-	setTaggedValueElement(currentElement, "description_copy", description);
+	var newddescription = upgradeStrings(description);
+	addTaggedValueToElement(currentElement, "description_copy", "");
+	changeTaggedValueElementFromShortToLong(currentElement, "description_copy")
+	setTaggedValueElement(currentElement, "description_copy", newddescription);
 	
 	var legalSource = getTaggedValueElement(currentElement, "lovgrundlag", "");
 	setTaggedValueElement(currentElement, "legalSource_copy", legalSource);
@@ -214,10 +218,14 @@ function copyGrunddataTags(currentElement)
 function copyGrunddataTagsAttribute(currentAttribute)
 {
 	var definition = getTaggedValueAttribute(currentAttribute, "definition", "");
-	setTaggedValueAttribute(currentAttribute, "definition_copy", definition);
+	var newdefinition = upgradeStrings(definition);
+	setTaggedValueAttribute(currentAttribute, "definition_copy", newdefinition);
 	
 	var description = getTaggedValueAttribute(currentAttribute, "note", "");
-	setTaggedValueAttribute(currentAttribute, "description_copy", description);
+	var newddescription = upgradeStrings(description);
+	addTaggedValueToAttribute(currentAttribute, "description_copy", "");
+	changeTaggedValueAttributeFromShortToLong(currentAttribute, "description_copy");
+	setTaggedValueAttribute(currentAttribute, "description_copy", newddescription);
 	
 	var legalSource = getTaggedValueAttribute(currentAttribute, "lovgrundlag", "");
 	setTaggedValueAttribute(currentAttribute, "legalSource_copy", legalSource);
@@ -303,7 +311,7 @@ function changeAttributeTags(currentElement)
 }
 
 /**	
-* Change tags on enums from Grunddata::DKEgenskab to Grunddata2::DKEgenskab
+* Change tags on enums from Grunddata::DKEgenskab to Grunddata2::DKEnumværdi
 *
 */
 function changeEnumTags(currentElement)
@@ -318,11 +326,11 @@ function changeEnumTags(currentElement)
 		
 		copyGrunddataTagsAttribute(currentAttribute);
 		
-		currentAttribute.StereotypeEx = "Grunddata2::DKEgenskab";
+		currentAttribute.StereotypeEx = "Grunddata2::DKEnumværdi";
 		currentAttribute.Update();
 	}
 	
-	Repository.SynchProfile("Grunddata2", "DKEgenskab");
+	Repository.SynchProfile("Grunddata2", "DKEnumværdi");
 	
 	for (var j = 0; j < attributes.Count; j++) 
 	{
@@ -330,19 +338,6 @@ function changeEnumTags(currentElement)
 		currentAttribute = attributes.GetAt(j);
 		updateGrunddata2TagsAttribute(currentAttribute);
 	}
-
-	for (var i = 0; i < attributes.Count; i++) 
-	{
-		var currentAttribute as EA.Attribute;
-		currentAttribute = attributes.GetAt(i);
-	
-		currentAttribute.StereotypeEx = "";
-		currentAttribute.Update();
-		
-		enumNumber++;
-	}
-
-	
 }
 
 /**	
@@ -409,17 +404,19 @@ function changeConnectorEndTag(connector, source)
 	//Session.Output("currentAttribute update: " + currentAttribute.Name );
 	
 	var definition = getTaggedValueConnectorEnd(connector, "definition", source, "");
-	if (definition.length > 0)
+	var definitionnew = upgradeStrings(definition);
+	if (definitionnew.length > 0)
 	{
 		//Session.Output("   Source " + source +"  Definition role: " + definition );
-		setTaggedValueConnectorEnd(connector, "definition (da)", definition, source)
+		setTaggedValueConnectorEnd(connector, "definition (da)", definitionnew, source)
 	}
 	deleteTaggedValueConnectorEnd(connector, "definition", source)
 	
 	var description = getTaggedValueConnectorEnd(connector, "note", source, "");
-	if (description.length > 0)
+	var descriptionnew = upgradeStrings(description);
+	if (descriptionnew.length > 0)
 	{	
-		setTaggedValueConnectorEnd(connector, "comment (da)", description, source)
+		setTaggedValueConnectorEnd(connector, "comment (da)", descriptionnew, source)
 	}
 	deleteTaggedValueConnectorEnd(connector, "note", source)
 	
@@ -466,9 +463,28 @@ function setGrunddata2PackageTags(currentPackageElement)
 	deleteTaggedValueElement(currentPackageElement, "forvaltingsopgave");
 }
 
+/**	
+* Upgrade definitions and descriptions to Modelregler v2.0 MDG
+*/
+function upgradeStrings(oldString) { 
+	
+	var lowerCaseString = oldString.charAt(0).toLowerCase() + oldString.slice(1);
+	var lastChar = lowerCaseString.slice(-1);
+	if(lastChar == ".")
+	{
+		var removeLastCarString = lowerCaseString.slice(0, -1);
+		return removeLastCarString;
+	}
+	else
+	{
+		return lowerCaseString;
+	}
+	
+	}
+
 
 /**	
-* Upgade diagrams to Modelregler v2.0 MDG
+* Upgrade diagrams to Modelregler v2.0 MDG
 */
 function upgradeDiagrams(package /* EA.Package */) { 
 	var diagrams = getDiagramsOfPackageAndSubpackages(package);
