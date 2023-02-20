@@ -14,11 +14,14 @@ var attributeNumber = 0;
 var enumNumber = 0;
 var roleNumber = 0;
 var diagramNumber = 0;
+var promptResult;
 
 /**
  * Change the stereotypes on package's, element's, attributes and roles from Grundata 1.2 uml-profile to the Grunddata 2.0 uml-profile.
  * Copies data for Grundata 1.2 tags to Grunddata 2.0 when posible
+ * Creates Classificationmodels from Enumerations
  * Diagrams are updated to to Grunddata version 2.0 MDG
+ * Definitions and Description are updated to follow Grunddata 2.0  e.g. start with lowerCase and end without full stop
  *
  * Requirement : Grunddata2MDG.xml needs to be installed for the script to work.
  *
@@ -34,6 +37,8 @@ function main() {
 	packageMain = Repository.GetTreeSelectedPackage();
 	if (packageMain != null && packageMain.ParentID != 0)
 	{
+		promptResult = Session.Prompt("Yes: Create classification models from enumerations\r\nNo: Keep enumerations i current model", promptYESNO);
+		
 		var packageElement as EA.Element;
 		packageElement = packageMain.Element;
 		packageElement.StereotypeEx = "DKDomænemodel";
@@ -120,18 +125,23 @@ function changeElementStereotypes(currentPackage, packageMain)
 			else if(currentElement.FQStereotype == "Grunddata::DKEnumeration" )
 			{
 				Session.Output("\nChange stereotype on: " + currentElement.Name );
-				var newPackage as EA.Package;
-				newPackage = packageMain.Packages.AddNew(currentElement.Name, null );
 				
-				newPackage.Update();
-				newPackage.StereotypeEx = "DKKlassifikationsmodel";
-				newPackage.Update();
+				switch (promptResult) {
+				case resultYes:
+					var newPackage as EA.Package;
+					newPackage = packageMain.Packages.AddNew(currentElement.Name, null );
 				
-				Session.Output("  Create new Pakage DKKlassifikationsmodel: " + currentElement.Name );
+					newPackage.Update();
+					newPackage.StereotypeEx = "DKKlassifikationsmodel";
+					newPackage.Update();
 				
-				var PI = newPackage.PackageID;
+					Session.Output("  Create new Pakage DKKlassifikationsmodel: " + currentElement.Name );
 				
-				currentElement.PackageID = PI;
+					var PI = newPackage.PackageID;
+				
+					currentElement.PackageID = PI;
+					case resultNo:
+				}
 				copyGrunddataTags(currentElement);
 
 				currentElement.StereotypeEx = "Grunddata2::DKEnumeration";

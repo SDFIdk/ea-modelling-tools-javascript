@@ -11,7 +11,9 @@ Upgrade a model from model rules	"modelregler for Grunddata version 1.2"
 
 Change the stereotypes on package's, element's, attributes and roles from Grundata 1.2 uml-profile to the Grunddata 2.0 uml-profile.
 Copies data for Grundata 1.2 tags to Grunddata 2.0 when posible
+Creates Classificationmodels from Enumerations
 Diagrams are updated to to Grunddata version 2.0 MDG
+Definitions and Description are updated to follow Grunddata 2.0  e.g. start with lowerCase and end without full stop
 
 Requirement : Grunddata2MDG.xml needs to be installed for the script to work.
 
