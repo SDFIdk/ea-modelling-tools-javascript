@@ -23,7 +23,7 @@ function main() {
 	 * - one because the asterisk must be escaped with a backslash when calling a Java program from the command line
 	 * - one because the backslash to escape the asterisk must be escaped itself when the regex is constructed in a script
 	 */
-	var scriptGroupNameOrRegex = "eamt-\\*";
+	var scriptGroupNameOrRegex = "eamt-%";
 	
 	var scriptFolderPath = chooseFolderWithUI("Folder in which the script files should be saved (ea-modelling-tools-javascript/src)");
 	if (scriptFolderPath.length == 0) {

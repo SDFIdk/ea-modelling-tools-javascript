@@ -160,21 +160,13 @@ Exports the scripts in one or more scripts groups as
 2. seperate script files
 3. a separate README.md file, containing the documentation extracted from the scripts
 
-An asterisk (*) in a regex must be escaped with a backslash, see also Java class
-`dk.gov.data.modellingtools.app.ExportScripts`.
+The name/regex is used in a LIKE expression in the database of EA project file.
 
-So use `xyz\*` instead of `xyz*` to export all script groups that have a name starting with xyz.
+For .qea files, see [the LIKE operator in SQLite](https://sqlite.org/lang_expr.html#the_like_glob_regexp_match_and_extract_operators).
 
-The name/regex is used in a LIKE expression in the database of the .eapx file.
-See [The LIKE operator in Microsoft Jet SQL](https://docs.microsoft.com/en-us/previous-versions/office/developer/office2000/aa140015(v=office.10)#the-like-operator)
-and below for the syntax.
-
- - asterisk (`*`): matches any number of characters and can be used anywhere in the pattern string.
- - question mark (`?`) matches any single character and can be used anywhere in the pattern string.
- - number sign (`#`): matches any single digit and can be used anywhere in the pattern string.
- - square brackets (`[]`): matches any single character within the list that is enclosed within brackets, and can be used anywhere in the pattern string.
- - exclamation mark (`!`): matches any single character not in the list that is enclosed within the square brackets.
- - hyphen (`-`): matches any one of a range of characters that is enclosed within the square brackets.
+For .eapx files, see
+[the LIKE operator in Microsoft Jet SQL](https://docs.microsoft.com/en-us/previous-versions/office/developer/office2000/aa140015(v=office.10)#the-like-operator)
+Note that an asterisk (*) in a regex must be escaped with a backslash. So use `xyz\*` instead of `xyz*` to export all script groups that have a name starting with xyz.
 
 
 
