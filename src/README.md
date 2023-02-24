@@ -4,6 +4,15 @@
 
 Scripts that assist in creating a logical data model in UML. Scripts that prepare the derivation of physical data schemas are not included here.
 
+### link-the-type-on-attributes-to-a-type-in-the-model
+
+Change attribute types to types in model
+
+Makes sure that the types of the attributes are actually elements
+present in the model.
+
+
+
 ### move-grunddata1-to-grunddata2
 
 Upgrade a model from model rules	"modelregler for Grunddata version 1.2" 
@@ -167,17 +176,6 @@ For .qea files, see [the LIKE operator in SQLite](https://sqlite.org/lang_expr.h
 For .eapx files, see
 [the LIKE operator in Microsoft Jet SQL](https://docs.microsoft.com/en-us/previous-versions/office/developer/office2000/aa140015(v=office.10)#the-like-operator)
 Note that an asterisk (*) in a regex must be escaped with a backslash. So use `xyz\*` instead of `xyz*` to export all script groups that have a name starting with xyz.
-
-
-
-## eamt-scripts
-
-
-
-### link-the-type-on-attributes-to-a-type-in-the-model
-
-
-Purpose: change types to types found in the model.
 
 
 
