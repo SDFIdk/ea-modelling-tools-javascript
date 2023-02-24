@@ -30,6 +30,16 @@ Not all mandatory Grunddata 2.0 tags can be filled out from Grunddata 1.2 tags, 
 
 
 
+### remove-tagged-value
+
+Remove tagged value from the model
+
+Removes all tagged values with the name given via user input, from all elements
+of type Class, DataType and Enumeration, and their properties 
+in the selected package and its subpackages.
+
+
+
 ## eamt-data-model-export
 
 Scripts that assist in exporting a logical data model.
