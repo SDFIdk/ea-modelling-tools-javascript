@@ -60,6 +60,40 @@ This script uses template vocabulary_csv.ftl in %EAMT_HOME%/config/templates.
 
 Scripts that assist in preparing the derivation of physical data schemas, e.g. using [ShapeChange](https://shapechange.net/).
 
+### set-database-names
+
+Adds tagged values with database name
+
+Adds tagged value "dbName" containing the name to be used in the database 
+for all relevant model elements (not on enumeration values).
+
+The database name is set using the following logic: 
+
+```mermaid
+flowchart LR
+    %% decisions
+    oracleNameSet{"Is tagged value<br />oracleName set?"}
+    transliteratedNameSet{Is tagged value<br />transliteratedName set?}
+    %% outcomes
+    useOracleName[Use tagged value oracleName]
+    usetransliteratedName[Use tagged value transliteratedName]
+    useModelElementName[Use model element name]
+    %% arrows
+    Start --> oracleNameSet
+    oracleNameSet --> | yes | useOracleName --> End
+    oracleNameSet --> | no | transliteratedNameSet
+    transliteratedNameSet --> | yes | usetransliteratedName --> End
+    transliteratedNameSet --> | no | useModelElementName --> End
+ ```
+
+A special mapping is done for the following attributes:
+
+- geometry → geometri
+- beginLifespanVersion → registreringFra
+- endLifespanVersion → registreringTil
+
+
+
 ### transliterate-names
 
 Transliterates the names of the model elements.
