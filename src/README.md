@@ -40,6 +40,21 @@ in the selected package and its subpackages.
 
 
 
+### update-version-author-status
+
+Updates the version, author and status
+
+Updates the version, author and status on all elements in this package and its subpackages.
+
+If the package has stereotype Grunddata::DKDomænemodel, the tagged value version is updated.
+
+If the package has stereotype Grunddata2::DKDomænemodel, 
+the tagged values versionInfo and responsibleEntity are updated.
+
+Packages with other stereotypes are not supported.
+
+
+
 ## eamt-data-model-export
 
 Scripts that assist in exporting a logical data model.
@@ -230,6 +245,17 @@ Synchronizes the tagged values of the Concept and ConceptModel stereotypes of th
 
 Synchronizes the tagged values of the Concept and ConceptModel stereotypes of the FDA profile using the
 [`Repository.SynchProfile()` method](https://www.sparxsystems.com/search/sphider/search.php?query=synchprofile&type=and&category=User+Guide+Latest&tab=5&search=1).
+
+
+
+### update-version-author-status
+
+Updates the version, author and status
+
+Updates the version, author and status on all elements in this package and its subpackages.
+The tagged values versionInfo and responsibleEntity are updated as well.
+
+Packages with other stereotypes than FDAprofil::ConceptModel are not supported.
 
 
 
