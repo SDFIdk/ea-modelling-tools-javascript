@@ -94,6 +94,100 @@ A special mapping is done for the following attributes:
 
 
 
+### set-gml-names
+
+Adds tagged values with a GML name
+
+Adds tagged value "gmlName" containing the name to be used in the 
+GML application schema for all relevant model elements (not on enumeration values).
+
+The GML name is set using the following logic: 
+
+```mermaid
+flowchart LR
+    %% decisions
+    gisNameSet{"Is tagged value<br />gisName set?"}
+    transliteratedNameSet{Is tagged value<br />transliteratedName set?}
+    %% outcomes
+    useGisName[Use tagged value gisName]
+    usetransliteratedName[Use tagged value transliteratedName]
+    useModelElementName[Use model element name]
+    %% arrows
+    Start --> gisNameSet
+    gisNameSet --> | yes | useGisName --> End
+    gisNameSet --> | no | transliteratedNameSet
+    transliteratedNameSet --> | yes | usetransliteratedName --> End
+    transliteratedNameSet --> | no | useModelElementName --> End
+ ```
+
+Setting a GML name is useful when dealing with feature collections, 
+where the GDAL/OGR [GML driver](https://gdal.org/drivers/vector/gml.html)
+expects the property name for the feature collection member to end on "member" or "members".
+
+By using those kinds of property names, at least support for GML in GIS is better and thus more user-friendly.
+See e.g. https://github.com/inspire-eu-validation/ets-repository/issues/142.
+
+An example:
+
+```mermaid
+classDiagram
+    class MyFeatureCollection {
+        …
+    }
+    class MyFeature {
+        …
+    }
+    MyFeatureCollection o--> "myFeature 0..*" MyFeature
+```
+
+
+When 
+
+1. setting tagged value gisName = myFeatureMember for property myFeature
+2. using this script
+3. configuring ShapeChange to use the value of gmlName when present
+
+the GML application schema below is obtained.
+
+```xml
+ <!-- … -->
+<element name="MyFeatureCollection" substitutionGroup="gml:AbstractFeature" type="ex:MyFeatureCollectionType">
+</element>
+<complexType name="MyFeatureCollectionType">
+    <complexContent>
+        <extension base="gml:AbstractFeatureType">
+            <sequence>
+                <!-- … -->
+                <element maxOccurs="unbounded" minOccurs="0" name="myFeatureMember">
+                    <complexType>
+                        <complexContent>
+                            <extension base="gml:AbstractFeatureMemberType">
+                                <sequence>
+                                    <element ref="ex:MyFeature"/>
+                                </sequence>
+                            </extension>
+                        </complexContent>
+                    </complexType>
+                </element>
+                <!-- … -->
+            </sequence>
+        </extension>
+    </complexContent>
+</complexType>
+<!-- … -->
+```
+
+A GML document specifying a feature collection of type `MyFeatureCollection`,
+containing features of type `MyFeature` in it, will then be recognized by
+the GDAL/OGR [GML driver](https://gdal.org/drivers/vector/gml.html)
+as having a layer called `MyFeature`, and its features can be visualized in QGIS 
+without doing any modifications or transformation.
+
+For more information about GML feature collections, see section 9.9 in the
+[GML 3.2.2 specification](https://portal.opengeospatial.org/files/?artifact_id=74183&version=2).
+
+
+
 ### transliterate-names
 
 Transliterates the names of the model elements.
