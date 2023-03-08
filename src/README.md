@@ -55,9 +55,9 @@ Packages with other stereotypes are not supported.
 
 
 
-## eamt-data-model-export
+## eamt-data-model-import-export
 
-Scripts that assist in exporting a logical data model.
+Scripts that assist in importing and exporting a logical data model.
 
 ### export-data-model-vocabulary-da
 

@@ -69,8 +69,8 @@
          <Column name="ScriptCategory" value="3955A83E-9E54-4810-8053-FACC68CD4782"/>
          <Column name="ScriptName" value="{FC483AD9-C76F-46b2-9883-E7D1D8C4B8EB}"/>
          <Column name="Notes"
-                  value="&lt;Group Type=&#34;CONTEXTPACKAGE&#34; Notes=&#34;Scripts that assist in exporting a logical data model.&#34;/&gt;&#xA;"/>
-         <Column name="Script" value="eamt-data-model-export"/>
+                  value="&lt;Group Type=&#34;CONTEXTPACKAGE&#34; Notes=&#34;Scripts that assist in importing and exporting a logical data model.&#34;/&gt;"/>
+         <Column name="Script" value="eamt-data-model-import-export"/>
       </DataRow>
       <DataRow>
          <Column name="ScriptCategory" value="605A62F7-BCD0-4845-A8D0-7DC45B4D2E3F"/>
