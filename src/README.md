@@ -253,45 +253,6 @@ in the EAMT Modelling Tools Java.
 
 
 
-## eamt-fda-concept-model-creation
-
-Scripts specific for creating concept models modelled using the FDA profile, see also https://arkitektur.digst.dk/metoder/regler-begrebs-og-datamodellering and https://github.com/digst/model-rules-tool-support.
-
-
-### synchronize-profile
-
-Synchronizes the tagged values of the Concept and ConceptModel stereotypes of the FDA profile
-
-Synchronizes the tagged values of the Concept and ConceptModel stereotypes of the FDA profile using the
-[`Repository.SynchProfile()` method](https://www.sparxsystems.com/search/sphider/search.php?query=synchprofile&type=and&category=User+Guide+Latest&tab=5&search=1).
-
-
-
-### update-version-author-status
-
-Updates the version, author and status
-
-Updates the version, author and status on all elements in this package and its subpackages.
-The tagged values versionInfo and responsibleEntity are updated as well.
-
-Packages with other stereotypes than FDAprofil::ConceptModel are not supported.
-
-
-
-## eamt-fda-concept-model-export
-
-
-
-### export-concept-model
-
-Exports a concept model.
-
-Exports a concept model to a specific format. The package containing the concept model must be selected in the Project Browser.
-
-This script uses templates concept_model_rdf.ftlx and concept_model_asciidoc.ftl in %EAMT_HOME%/config/templates.
-
-
-
 ## eamt-profile-management
 
 Scripts that assist in managing profiles of data models.
