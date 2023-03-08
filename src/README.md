@@ -222,7 +222,7 @@ and https://docs.oracle.com/search/?q=al32utf8.
 
 
 
-### transliterate-names
+### set-transliterated-names
 
 Transliterates the names of the model elements.
 
