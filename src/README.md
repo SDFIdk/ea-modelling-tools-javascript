@@ -203,6 +203,25 @@ For more information about GML feature collections, see section 9.9 in the
 
 
 
+### set-size-attribute-with-enumeration-type
+
+Sets the size tag of attributes based on their enumeration
+
+Sets the size tag of attributes based on the length of the enumeration literals 
+of the enumeration that is the attributes' type.
+
+You can choose whether to calculate the length in bytes (for Oracle) or
+in characters.
+
+Note that the size of characters in a database depends on the character set of 
+the database. This scripts can be used for an Oracle database with 
+character set AL32UTF8.
+
+See https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
+and https://docs.oracle.com/search/?q=al32utf8.
+
+
+
 ### transliterate-names
 
 Transliterates the names of the model elements.
