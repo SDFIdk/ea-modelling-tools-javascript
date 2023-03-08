@@ -410,8 +410,8 @@ function getTaggedValueConnectorEnd(connector, taggedValueName, source, defaultV
 			}
 		}
 		if (taggedValue != null) {
-			if (taggedValue.Value.substr(0, 6) == "<memo>") {
-				result = taggedValue.Value.substr(16); // the following is removed from the start of the value: <memo>$ea_notes=
+			if (taggedValue.Value.substring(0, 6) == "<memo>") {
+				result = taggedValue.Value.substring(16); // the following is removed from the start of the value: <memo>$ea_notes=
 			} else {
 				result = taggedValue.Value.split("$ea_notes=")[0];
 			}
@@ -439,8 +439,8 @@ function getTaggedValueConnectorEndByConnectorEnd(connectorEnd, taggedValueName,
 			}
 		}
 		if (taggedValue != null) {
-			if (taggedValue.Value.substr(0, 6) == "<memo>") {
-				result = taggedValue.Value.substr(16); // the following is removed from the start of the value: <memo>$ea_notes=
+			if (taggedValue.Value.substring(0, 6) == "<memo>") {
+				result = taggedValue.Value.substring(16); // the following is removed from the start of the value: <memo>$ea_notes=
 			} else {
 				result = taggedValue.Value.split("$ea_notes=")[0];
 			}
@@ -477,7 +477,7 @@ function setTaggedValueConnectorEnd(connector, taggedValueName, taggedValueValue
 		if (taggedValue == null) {
 			taggedValue = taggedValues.AddNew(taggedValueName, truncateTaggedValueValueIfNeeded(taggedValueValue));
 		} else {
-			if (taggedValue.Value.substr(0, 6) == "<memo>") {
+			if (taggedValue.Value.substring(0, 6) == "<memo>") {
 				taggedValue.Value = "<memo>$ea_notes=" + taggedValueValue;
 			} else {
 				taggedValue.Value = truncateTaggedValueValueIfNeeded(taggedValueValue);
@@ -543,7 +543,7 @@ function changeTaggedValueConnectorEndFromShortToLong(connector, taggedValueName
 		}
 
 		if (taggedValue != null) {
-			if (taggedValue.Value.substr(0, 6) == "<memo>") {
+			if (taggedValue.Value.substring(0, 6) == "<memo>") {
 				// do nothing
 			} else {
 				var taggedValueValue = taggedValue.Value;
@@ -636,8 +636,8 @@ function truncateTaggedValueValueIfNeeded(taggedValueValue) {
 	if (taggedValueValue.length <= MAX_LENGTH_TAGGED_VALUE) {
 		newTaggedValueValue = taggedValueValue;
 	} else {
-		LOGDebug("Truncate to " + MAX_LENGTH_TAGGED_VALUE + " characters: " + taggedValueValue.substr(0, 30) + "...");
-		newTaggedValueValue = taggedValueValue.substr(0, MAX_LENGTH_TAGGED_VALUE);
+		LOGDebug("Truncate to " + MAX_LENGTH_TAGGED_VALUE + " characters: " + taggedValueValue.substring(0, 30) + "...");
+		newTaggedValueValue = taggedValueValue.substring(0, MAX_LENGTH_TAGGED_VALUE);
 	}
 	return newTaggedValueValue;
 }
