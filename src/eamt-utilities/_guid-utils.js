@@ -11,7 +11,7 @@ function convertGuidToStandardRepresentation(guid) {
 		var message = "Length of " + guid + " is not 38, expected a UUID surrounded with curly braces";
 		throw message;
 	}
-	return guid.toLowerCase().substr(1,36);
+	return guid.toLowerCase().substring(1,36);
 }
 
 /**
@@ -23,9 +23,9 @@ function determineGuidAsXMLOfConnectorEnd(connectorGuid /* string */, source /* 
 	var connectorGuidAsXML = Repository.GetProjectInterface().GUIDtoXML(connectorGuid);
 	var connectorGuidAsXML;
 	if (source) {
-		connectorGuidAsXML = connectorGuidAsXML.substr(0, 5) + "src" + connectorGuidAsXML.substr(7);
+		connectorGuidAsXML = connectorGuidAsXML.substring(0, 5) + "src" + connectorGuidAsXML.substring(7);
 	} else {
-		connectorGuidAsXML = connectorGuidAsXML.substr(0, 5) + "dst" + connectorGuidAsXML.substr(7);
+		connectorGuidAsXML = connectorGuidAsXML.substring(0, 5) + "dst" + connectorGuidAsXML.substring(7);
 	}
 	return connectorGuidAsXML;
 	

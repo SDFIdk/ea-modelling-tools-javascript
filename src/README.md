@@ -4,6 +4,15 @@
 
 Scripts that assist in creating a logical data model in UML. Scripts that prepare the derivation of physical data schemas are not included here.
 
+### link-the-type-on-attributes-to-a-type-in-the-model
+
+Change attribute types to types in model
+
+Makes sure that the types of the attributes are actually elements
+present in the model.
+
+
+
 ### move-grunddata1-to-grunddata2
 
 Upgrade a model from model rules	"modelregler for Grunddata version 1.2" 
@@ -21,9 +30,34 @@ Not all mandatory Grunddata 2.0 tags can be filled out from Grunddata 1.2 tags, 
 
 
 
-## eamt-data-model-export
+### remove-tagged-value
 
-Scripts that assist in exporting a logical data model.
+Remove tagged value from the model
+
+Removes all tagged values with the name given via user input, from all elements
+of type Class, DataType and Enumeration, and their properties 
+in the selected package and its subpackages.
+
+
+
+### update-version-author-status
+
+Updates the version, author and status
+
+Updates the version, author and status on all elements in this package and its subpackages.
+
+If the package has stereotype Grunddata::DKDomænemodel, the tagged value version is updated.
+
+If the package has stereotype Grunddata2::DKDomænemodel, 
+the tagged values versionInfo and responsibleEntity are updated.
+
+Packages with other stereotypes are not supported.
+
+
+
+## eamt-data-model-import-export
+
+Scripts that assist in importing and exporting a logical data model.
 
 ### export-data-model-vocabulary-da
 
@@ -41,7 +75,154 @@ This script uses template vocabulary_csv.ftl in %EAMT_HOME%/config/templates.
 
 Scripts that assist in preparing the derivation of physical data schemas, e.g. using [ShapeChange](https://shapechange.net/).
 
-### transliterate-names
+### set-database-names
+
+Adds tagged values with database name
+
+Adds tagged value "dbName" containing the name to be used in the database 
+for all relevant model elements (not on enumeration values).
+
+The database name is set using the following logic: 
+
+```mermaid
+flowchart LR
+    %% decisions
+    oracleNameSet{"Is tagged value<br />oracleName set?"}
+    transliteratedNameSet{Is tagged value<br />transliteratedName set?}
+    %% outcomes
+    useOracleName[Use tagged value oracleName]
+    usetransliteratedName[Use tagged value transliteratedName]
+    useModelElementName[Use model element name]
+    %% arrows
+    Start --> oracleNameSet
+    oracleNameSet --> | yes | useOracleName --> End
+    oracleNameSet --> | no | transliteratedNameSet
+    transliteratedNameSet --> | yes | usetransliteratedName --> End
+    transliteratedNameSet --> | no | useModelElementName --> End
+ ```
+
+A special mapping is done for the following attributes:
+
+- geometry → geometri
+- beginLifespanVersion → registreringFra
+- endLifespanVersion → registreringTil
+
+
+
+### set-gml-names
+
+Adds tagged values with a GML name
+
+Adds tagged value "gmlName" containing the name to be used in the 
+GML application schema for all relevant model elements (not on enumeration values).
+
+The GML name is set using the following logic: 
+
+```mermaid
+flowchart LR
+    %% decisions
+    gisNameSet{"Is tagged value<br />gisName set?"}
+    transliteratedNameSet{Is tagged value<br />transliteratedName set?}
+    %% outcomes
+    useGisName[Use tagged value gisName]
+    usetransliteratedName[Use tagged value transliteratedName]
+    useModelElementName[Use model element name]
+    %% arrows
+    Start --> gisNameSet
+    gisNameSet --> | yes | useGisName --> End
+    gisNameSet --> | no | transliteratedNameSet
+    transliteratedNameSet --> | yes | usetransliteratedName --> End
+    transliteratedNameSet --> | no | useModelElementName --> End
+ ```
+
+Setting a GML name is useful when dealing with feature collections, 
+where the GDAL/OGR [GML driver](https://gdal.org/drivers/vector/gml.html)
+expects the property name for the feature collection member to end on "member" or "members".
+
+By using those kinds of property names, at least support for GML in GIS is better and thus more user-friendly.
+See e.g. https://github.com/inspire-eu-validation/ets-repository/issues/142.
+
+An example:
+
+```mermaid
+classDiagram
+    class MyFeatureCollection {
+        …
+    }
+    class MyFeature {
+        …
+    }
+    MyFeatureCollection o--> "myFeature 0..*" MyFeature
+```
+
+
+When 
+
+1. setting tagged value gisName = myFeatureMember for property myFeature
+2. using this script
+3. configuring ShapeChange to use the value of gmlName when present
+
+the GML application schema below is obtained.
+
+```xml
+ <!-- … -->
+<element name="MyFeatureCollection" substitutionGroup="gml:AbstractFeature" type="ex:MyFeatureCollectionType">
+</element>
+<complexType name="MyFeatureCollectionType">
+    <complexContent>
+        <extension base="gml:AbstractFeatureType">
+            <sequence>
+                <!-- … -->
+                <element maxOccurs="unbounded" minOccurs="0" name="myFeatureMember">
+                    <complexType>
+                        <complexContent>
+                            <extension base="gml:AbstractFeatureMemberType">
+                                <sequence>
+                                    <element ref="ex:MyFeature"/>
+                                </sequence>
+                            </extension>
+                        </complexContent>
+                    </complexType>
+                </element>
+                <!-- … -->
+            </sequence>
+        </extension>
+    </complexContent>
+</complexType>
+<!-- … -->
+```
+
+A GML document specifying a feature collection of type `MyFeatureCollection`,
+containing features of type `MyFeature` in it, will then be recognized by
+the GDAL/OGR [GML driver](https://gdal.org/drivers/vector/gml.html)
+as having a layer called `MyFeature`, and its features can be visualized in QGIS 
+without doing any modifications or transformation.
+
+For more information about GML feature collections, see section 9.9 in the
+[GML 3.2.2 specification](https://portal.opengeospatial.org/files/?artifact_id=74183&version=2).
+
+
+
+### set-size-attribute-with-enumeration-type
+
+Sets the size tag of attributes based on their enumeration
+
+Sets the size tag of attributes based on the length of the enumeration literals 
+of the enumeration that is the attributes' type.
+
+You can choose whether to calculate the length in bytes (for Oracle) or
+in characters.
+
+Note that the size of characters in a database depends on the character set of 
+the database. This scripts can be used for an Oracle database with 
+character set AL32UTF8.
+
+See https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
+and https://docs.oracle.com/search/?q=al32utf8.
+
+
+
+### set-transliterated-names
 
 Transliterates the names of the model elements.
 
@@ -69,34 +250,6 @@ Retrieves the Windows process id of this EA instance.
 Retrieves the [Windows process id](https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/finding-the-process-id) 
 of the EA instance from which this script is invoked. That process id can be used as an argument to one of the applications
 in the EAMT Modelling Tools Java.
-
-
-
-## eamt-fda-concept-model-creation
-
-Scripts specific for creating concept models modelled using the FDA profile, see also https://arkitektur.digst.dk/metoder/regler-begrebs-og-datamodellering and https://github.com/digst/model-rules-tool-support.
-
-
-### synchronize-profile
-
-Synchronizes the tagged values of the Concept and ConceptModel stereotypes of the FDA profile
-
-Synchronizes the tagged values of the Concept and ConceptModel stereotypes of the FDA profile using the
-[`Repository.SynchProfile()` method](https://www.sparxsystems.com/search/sphider/search.php?query=synchprofile&type=and&category=User+Guide+Latest&tab=5&search=1).
-
-
-
-## eamt-fda-concept-model-export
-
-
-
-### export-concept-model
-
-Exports a concept model.
-
-Exports a concept model to a specific format. The package containing the concept model must be selected in the Project Browser.
-
-This script uses templates concept_model_rdf.ftlx and concept_model_asciidoc.ftl in %EAMT_HOME%/config/templates.
 
 
 
@@ -160,32 +313,13 @@ Exports the scripts in one or more scripts groups as
 2. seperate script files
 3. a separate README.md file, containing the documentation extracted from the scripts
 
-An asterisk (*) in a regex must be escaped with a backslash, see also Java class
-`dk.gov.data.modellingtools.app.ExportScripts`.
+The name/regex is used in a LIKE expression in the database of EA project file.
 
-So use `xyz\*` instead of `xyz*` to export all script groups that have a name starting with xyz.
+For .qea files, see [the LIKE operator in SQLite](https://sqlite.org/lang_expr.html#the_like_glob_regexp_match_and_extract_operators).
 
-The name/regex is used in a LIKE expression in the database of the .eapx file.
-See [The LIKE operator in Microsoft Jet SQL](https://docs.microsoft.com/en-us/previous-versions/office/developer/office2000/aa140015(v=office.10)#the-like-operator)
-and below for the syntax.
-
- - asterisk (`*`): matches any number of characters and can be used anywhere in the pattern string.
- - question mark (`?`) matches any single character and can be used anywhere in the pattern string.
- - number sign (`#`): matches any single digit and can be used anywhere in the pattern string.
- - square brackets (`[]`): matches any single character within the list that is enclosed within brackets, and can be used anywhere in the pattern string.
- - exclamation mark (`!`): matches any single character not in the list that is enclosed within the square brackets.
- - hyphen (`-`): matches any one of a range of characters that is enclosed within the square brackets.
-
-
-
-## eamt-scripts
-
-
-
-### link-the-type-on-attributes-to-a-type-in-the-model
-
-
-Purpose: change types to types found in the model.
+For .eapx files, see
+[the LIKE operator in Microsoft Jet SQL](https://docs.microsoft.com/en-us/previous-versions/office/developer/office2000/aa140015(v=office.10)#the-like-operator)
+Note that an asterisk (*) in a regex must be escaped with a backslash. So use `xyz\*` instead of `xyz*` to export all script groups that have a name starting with xyz.
 
 
 

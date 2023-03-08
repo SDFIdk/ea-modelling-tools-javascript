@@ -1,15 +1,13 @@
 !INC eamt-utilities._constants
 !INC eamt-utilities._logging-utils
 !INC eamt-utilities._model-utils
-
-var LOGLEVEL_INFO = 2;
-var LOGLEVEL_WARNING = 1;
-var LOGLEVEL = LOGLEVEL_INFO;
+!INC eamt-utilities._messages
  
  /**
- * Purpose: change types to types found in the model.
+ * Makes sure that the types of the attributes are actually elements
+ * present in the model.
  *
- * @author Styrelsen for Dataforsyning og Effektivisering
+ * @summary Change attribute types to types in model
  */
 function main() {
 	// Show the script output window
@@ -85,8 +83,7 @@ function main() {
 		LOGInfo( "Done!" );
 	}
 	else {
-		Session.Prompt("This script requires a package to be selected in the Project Browser.\n" +
-			"Please select a package in the Project Browser and try again.", promptOK);
+		LOGError(MESSAGE_PACKAGE_REQUIRED);
 	}
 }
 
