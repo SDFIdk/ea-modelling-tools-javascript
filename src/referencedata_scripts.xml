@@ -8,8 +8,8 @@
          <Column name="ScriptCategory" value="3955A83E-9E54-4810-8053-FACC68CD4782"/>
          <Column name="ScriptName" value="{22061E80-B992-43ee-AEBD-02863448FF60}"/>
          <Column name="Notes"
-                  value="&lt;Group Type=&#34;NORMAL&#34; Notes=&#34;Validation scripts to validate the model against for instance the basic data model rules version 2. &#34;/&gt;&#xA;"/>
-         <Column name="Script" value="eamt-val-data-model-validation"/>
+                  value="&lt;Group Type=&#34;NORMAL&#34; Notes=&#34;Validation scripts to validate the model against for instance the basic data model rules version 2. &#34;/&gt;"/>
+         <Column name="Script" value="eamt-data-model-validation"/>
       </DataRow>
       <DataRow>
          <Column name="ScriptCategory" value="3955A83E-9E54-4810-8053-FACC68CD4782"/>
