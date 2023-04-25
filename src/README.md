@@ -107,6 +107,20 @@ Select a model in the Project Browser and run this script in order to validate i
 
 
 
+### validate-sequence-numbers
+
+Validates sequence numbers.
+
+Validates that a tagged value sequenceNumber is set on the end of outgoing associations of elements
+that have more than one outgoing association and that no properties have the same sequenceNumber.
+
+ShapeChange ensures that in a case where sequence numbers aren't explicitly set,
+attributes are placed in front of association roles by giving attributes a sufficiently
+low sequence number. Therefore, it is sufficient to have sequence numbers on associations ends only,
+attributes do not need sequence numbers (but may have sequence numbers).
+
+
+
 
 
 ## eamt-data-schema-preparation
