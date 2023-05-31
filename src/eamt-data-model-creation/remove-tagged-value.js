@@ -6,8 +6,8 @@
 !INC eamt-utilities._tagged-values-utils
  
 /**
- * Removes all tagged values with the name given via user input, from all elements
- * of type Class, DataType and Enumeration, and their properties 
+ * Removes all tagged values with the name given via user input, from all classifiers
+ * used in data modelling, and from their properties, 
  * in the selected package and its subpackages.
  *
  * @summary Remove tagged value from the model
@@ -38,7 +38,7 @@ function main() {
 		var elements = getElementsOfPackageAndSubpackages(aPackage);
 		for (var i = 0; i < elements.length; i++) {
 			currentElement = elements[i];
-			if (currentElement.Type == "Class" || currentElement.Type == "DataType" || currentElement.Type == "Enumeration") {
+			if (getDataModellingClassifiers().includes(currentElement.Type)) {
 				deleteTaggedValueElement(currentElement, taggedValue);
 
 				var attributes as EA.Collection;
