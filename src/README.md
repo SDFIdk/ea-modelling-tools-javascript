@@ -34,8 +34,8 @@ Not all mandatory Grunddata 2.0 tags can be filled out from Grunddata 1.2 tags, 
 
 Remove tagged value from the model
 
-Removes all tagged values with the name given via user input, from all elements
-of type Class, DataType and Enumeration, and their properties 
+Removes all tagged values with the name given via user input, from all classifiers
+used in data modelling, and from their properties, 
 in the selected package and its subpackages.
 
 
