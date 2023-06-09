@@ -4,6 +4,19 @@
 
 Scripts that assist in creating a logical data model in UML. Scripts that prepare the derivation of physical data schemas are not included here.
 
+### change-tagged-value-from-single-line-to-multi-line
+
+Converts single-line tagged values to multi-line tagged values
+
+Converts single-line tagged values with the given name to multi-line tagged values,
+also knows as "memo" tagged values.
+
+This can be useful when a custom tagged value, not related to a MDG; has been added to 
+model elements, and it becomes clear that it has to be able to contain a lot of text
+and/or line breaks and new lines.
+
+
+
 ### link-the-type-on-attributes-to-a-type-in-the-model
 
 Change attribute types to types in model
