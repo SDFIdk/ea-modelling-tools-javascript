@@ -112,7 +112,7 @@ function hasElementTaggedValue(element, taggedValueName) {
  * @param theElement {EA.Element}
  * @param taggedValueName {string}
  */
-function changeTaggedValueElementFromShortToLong(theElement, taggedValueName) {
+function changeTaggedValueElementFromSingleLineToMultiLine(theElement, taggedValueName) {
 	if (theElement != null && taggedValueName.length > 0) {
 		var taggedValue as EA.TaggedValue;
 		var taggedValues as EA.Collection;
@@ -297,7 +297,7 @@ function hasAttributeTaggedValue(attribute, taggedValueName) {
  * @param attribute {EA.Attribute}
  * @param taggedValueName {string}
  */
-function changeTaggedValueAttributeFromShortToLong(attribute, taggedValueName) {
+function changeTaggedValueAttributeFromSingleLineToMultiLine(attribute, taggedValueName) {
 	if (attribute != null && taggedValueName.length > 0) {
 		var taggedValue as EA.AttributeTag;
 		var taggedValues as EA.Collection;
@@ -523,7 +523,7 @@ function hasConnectorEndTaggedValue(connector, taggedValueName, source) {
  * @param taggedValueName {string}
  * @param source {boolean}
  */
-function changeTaggedValueConnectorEndFromShortToLong(connector, taggedValueName, source) {
+function changeTaggedValueConnectorEndFromSingleLineToMultiLine(connector, taggedValueName, source) {
 	if (connector != null && taggedValueName.length > 0) {
 		var taggedValues as EA.Collection;
 		if (source) {
@@ -627,6 +627,8 @@ function deleteTaggedValueConnectorEnd(connector, taggedValueName, source) {
  * When using a longer value than the maximum, the value cannot be set in the database. EA doesn't show a message
  * but file %appdata%\Sparx Systems\EA\DBError.txt will contain the following:
  * The field is too small to accept the amount of data you attempted to add.  Try inserting or pasting less data.
+ *
+ * Note that the above was true for eap(x) files. It seems that this does not occur anymore for qea (SQLite) files.
  *
  * @param taggedValueValue {string}
  * @return {string} truncated value
