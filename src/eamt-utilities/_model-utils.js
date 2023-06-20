@@ -71,7 +71,7 @@ function getAssociationsOfPackageAndSubpackages(aPackage) {
 			}
 		}
 	}
-	return connectorMap.values();
+	return Array.from(connectorMap.values());
 }
 
 /**
