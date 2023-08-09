@@ -2,62 +2,65 @@
 
 ## eamt-data-model-creation
 
-Scripts that assist in creating a logical data model in UML. Scripts that prepare the derivation of physical data schemas are not included here.
+Scripts that assist in creating a logical data model in UML. Scripts preparing the derivation of physical data schemas are **not** included here.
 
 ### change-tagged-value-from-single-line-to-multi-line
 
-Converts single-line tagged values to multi-line tagged values
+Converts single-line tagged values to multi-line tagged values.
 
-Converts single-line tagged values with the given name to multi-line tagged values,
-also knows as "memo" tagged values.
+Converts single-line tagged values with the given name to multi-line tagged values.
+Multi-line tagged values are also known as "memo" tagged values.
 
-This can be useful when a custom tagged value, not related to a MDG; has been added to 
-model elements, and it becomes clear that it has to be able to contain a lot of text
+This can be useful when custom tagged values, not defined in a UML profile, have been added to 
+model elements, and it becomes clear that they can contain a large amount of text
 and/or line breaks and new lines.
 
 
 
 ### link-the-type-on-attributes-to-a-type-in-the-model
 
-Change attribute types to types in model
+Change attribute type to classifier reference.
 
-Makes sure that the types of the attributes are actually elements
-present in the model.
+Makes sure that the types of the attributes are actually 
+present as classifiers in the model.
 
 
 
 ### move-grunddata1-to-grunddata2
 
-Upgrade a model from model rules	"modelregler for Grunddata version 1.2" 
-						  to model rules	"modelregler for Grunddata version 2.0"
+Upgrade a model from the UML profile of "Modelregler for Grunddata version 1" to the UML profile of "Modelregler for Grunddata version 2".
 
-Change the stereotypes on package's, element's, attributes and roles from Grundata 1.2 uml-profile to the Grunddata 2.0 uml-profile.
-Copies data for Grundata 1.2 tags to Grunddata 2.0 when posible
-Creates Classificationmodels from Enumerations
-Diagrams are updated to to Grunddata version 2.0 MDG
-Definitions and Description are updated to follow Grunddata 2.0  e.g. start with lowerCase and end without full stop
+Update a model to use the UML profile for basic data (grunddata) version 2 
+instead of the UML profile for basic data version 1. This includes:
 
-Requirement : Grunddata2MDG.xml needs to be installed for the script to work.
+- updating the stereotypes;
+- copying the values of the tagged values, when possible;
+- updating the definitions and the description to start with a lower case character and to end without a full stop;
+- creating classification models from enumeration, if wanted;
+- updating the diagram types.
 
-Not all mandatory Grunddata 2.0 tags can be filled out from Grunddata 1.2 tags, so for a model to be Grunddata 2.0 compliant further Grunddata 2.0 tags needs to be set.
+Prerequisite: Grunddata2MDG.xml must be installed.
+
+Not all mandatory version 2 tags can be filled out from the version 1 tags, 
+so for a model to be version 2 compliant, more tags must be filled out.
 
 
 
 ### remove-tagged-value
 
-Remove tagged value from the model
+Remove a tagged value from the model.
 
-Removes all tagged values with the name given via user input, from all classifiers
+Removes all tagged values, with the name given via user input, from all classifiers
 used in data modelling, and from their properties, 
-in the selected package and its subpackages.
+in the selected package and subpackages.
 
 
 
 ### update-version-author-status
 
-Updates the version, author and status
+Updates the version, author and status.
 
-Updates the version, author and status on all elements in this package and its subpackages.
+Updates the version, author and status on all elements in this package and subpackages.
 
 If the package has stereotype Grunddata::DKDomænemodel, the tagged value version is updated.
 
@@ -88,35 +91,29 @@ This script uses template vocabulary_csv.ftl in %EAMT_HOME%/config/templates.
 
 Validation scripts to validate the model against for instance the basic data model rules version 2. 
 
+
+
 ### validate-model-basic-data2
 
-Validate a model against the basic data model rules version 2.
 
-Script to validate any model against the basic data model rules version 2 
-(http://grunddatamodel.datafordeler.dk/modelregler/grunddatamodelregler.html).
-
-Select a model in the Project Browser and run this script in order to validate it.
+Validates a model model against the 
+[basic data model rules version 2](http://grunddatamodel.datafordeler.dk/modelregler/grunddatamodelregler.html).
 
 
 
 ### validate-model-profile-basic-data2
 
-Validate a model against the basic data model rules version 2.
 
-Script to validate any model against the basic data model rules version 2 for specific profile
-(http://grunddatamodel.datafordeler.dk/modelregler/grunddatamodelregler.html).
-
-Select a model in the Project Browser, edit the profile in the script and run this script in order to validate model.
+Validates any model against the
+[basic data model rules version 2](http://grunddatamodel.datafordeler.dk/modelregler/grunddatamodelregler.html)
+for a specific profile.
 
 
 
 ### validate-model-simple
 
-Validate a model against the simplest rules.
 
-Script to validate any model against the simplest rules for modelling in SDFI 
-
-Select a model in the Project Browser and run this script in order to validate it.
+Validates any model against the simplest rules for modelling in SDFI.
 
 
 
@@ -124,15 +121,15 @@ Select a model in the Project Browser and run this script in order to validate i
 
 Validates sequence numbers.
 
-Validates that a tagged value sequenceNumber is set on the end of outgoing associations of elements
-that have more than one outgoing association and that no properties have the same sequenceNumber.
+Validates all of the following:
 
-ShapeChange ensures that in a case where sequence numbers aren't explicitly set,
+1. A tagged value sequenceNumber is set on the ends of outgoing associations of classifiers having more than one outgoing association;
+2. A classifier has no properties with the same sequenceNumber.
+
+ShapeChange ensures that in a case where sequence numbers are not explicitly set,
 attributes are placed in front of association roles by giving attributes a sufficiently
 low sequence number. Therefore, it is sufficient to have sequence numbers on associations ends only,
 attributes do not need sequence numbers (but may have sequence numbers).
-
-
 
 
 
@@ -142,7 +139,7 @@ Scripts that assist in preparing the derivation of physical data schemas, e.g. u
 
 ### set-database-names
 
-Adds tagged values with database name
+Adds tagged values with database name.
 
 Adds tagged value "dbName" containing the name to be used in the database 
 for all relevant model elements (not on enumeration values).
@@ -155,9 +152,9 @@ flowchart LR
     oracleNameSet{"Is tagged value<br />oracleName set?"}
     transliteratedNameSet{Is tagged value<br />transliteratedName set?}
     %% outcomes
-    useOracleName[Use tagged value oracleName]
-    usetransliteratedName[Use tagged value transliteratedName]
-    useModelElementName[Use model element name]
+    useOracleName[Use the value of tagged value oracleName as value of tagged value dbName]
+    usetransliteratedName[Use tagged value transliteratedName as value of tagged value dbName]
+    useModelElementName[Use model element name as value of tagged value dbName]
     %% arrows
     Start --> oracleNameSet
     oracleNameSet --> | yes | useOracleName --> End
@@ -176,7 +173,7 @@ A special mapping is done for the following attributes:
 
 ### set-gml-names
 
-Adds tagged values with a GML name
+Adds tagged values with a GML name.
 
 Adds tagged value "gmlName" containing the name to be used in the 
 GML application schema for all relevant model elements (not on enumeration values).
@@ -189,9 +186,9 @@ flowchart LR
     gisNameSet{"Is tagged value<br />gisName set?"}
     transliteratedNameSet{Is tagged value<br />transliteratedName set?}
     %% outcomes
-    useGisName[Use tagged value gisName]
-    usetransliteratedName[Use tagged value transliteratedName]
-    useModelElementName[Use model element name]
+    useGisName[Use tagged value gisName as value of tagged value gmlName]
+    usetransliteratedName[Use tagged value transliteratedName as value of tagged value gmlName]
+    useModelElementName[Use model element name as value of tagged value gmlName]
     %% arrows
     Start --> gisNameSet
     gisNameSet --> | yes | useGisName --> End
@@ -204,7 +201,7 @@ Setting a GML name is useful when dealing with feature collections,
 where the GDAL/OGR [GML driver](https://gdal.org/drivers/vector/gml.html)
 expects the property name for the feature collection member to end on "member" or "members".
 
-By using those kinds of property names, at least support for GML in GIS is better and thus more user-friendly.
+By using those kinds of property names, at least support for GML in QGIS is better and thus more user-friendly.
 See e.g. https://github.com/inspire-eu-validation/ets-repository/issues/142.
 
 An example:
@@ -258,10 +255,10 @@ the GML application schema below is obtained.
 ```
 
 A GML document specifying a feature collection of type `MyFeatureCollection`,
-containing features of type `MyFeature` in it, will then be recognized by
+containing features of type `MyFeature`, will be recognized by
 the GDAL/OGR [GML driver](https://gdal.org/drivers/vector/gml.html)
 as having a layer called `MyFeature`, and its features can be visualized in QGIS 
-without doing any modifications or transformation.
+without doing any modifications or transformations.
 
 For more information about GML feature collections, see section 9.9 in the
 [GML 3.2.2 specification](https://portal.opengeospatial.org/files/?artifact_id=74183&version=2).
@@ -270,16 +267,17 @@ For more information about GML feature collections, see section 9.9 in the
 
 ### set-size-attribute-with-enumeration-type
 
-Sets the size tag of attributes based on their enumeration
+Sets the size tag of attributes based on the referenced enumeration.
 
-Sets the size tag of attributes based on the length of the enumeration literals 
-of the enumeration that is the attributes' type.
+Adds a tagged value "size" to attributes. The value is based on the 
+length of the enumeration literals 
+of the enumeration that is the attribute's type.
 
 You can choose whether to calculate the length in bytes (for Oracle) or
-in characters.
+in characters (for Oracle and PostgreSQL).
 
 Note that the size of characters in a database depends on the character set of 
-the database. This scripts can be used for an Oracle database with 
+the database. This script can be used for an Oracle database with 
 character set AL32UTF8.
 
 See https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
@@ -313,7 +311,7 @@ Tools for persons that contribute to the development of the EAMT scripts.
 Retrieves the Windows process id of this EA instance.
 
 Retrieves the [Windows process id](https://docs.microsoft.com/en-us/windows-hardware/drivers/debugger/finding-the-process-id) 
-of the EA instance from which this script is invoked. That process id can be used as an argument to one of the applications
+of the EA instance from which this script is invoked. The process id can be used as an argument to one of the applications
 in the EAMT Modelling Tools Java.
 
 
@@ -326,8 +324,8 @@ Scripts that assist in managing profiles of data models.
 
 Adds a new profile to model elements, if not yet present.
 
-Adds a new profile to either all relevant elements and their properties in the selected package
-or to the selected element and its properties.
+Adds a new profile to the package and/or classifier (including the classifier's properties)
+selected in the project browser.
 
 
 
@@ -335,8 +333,8 @@ or to the selected element and its properties.
 
 Prepare a model for profiling.
 
-Add tagged value "profiles" to either all relevant elements and their properties in the selected package
-or to the selected element and its properties, if that tagged value is not yet present.
+Adds tagged value "profiles" to the package and/or classifier (including the classifier's properties)
+selected in the project browser, if that tagged value is not yet present.
 
 The value of tagged value "profiles" is set to an empty string, if the tagged value is not yet present.
 
@@ -365,7 +363,7 @@ Exports the scripts in the EAMT scripts groups as
 2. seperate script files
 3. a separate README.md file, containing the documentation extracted from the scripts
 
-The scripts should be saved in folder `ea-modelling-tools-javascript/src`.
+The scripts should be saved in folder `.../ea-modelling-tools-javascript/src`.
 
 
 
@@ -390,7 +388,7 @@ Note that an asterisk (*) in a regex must be escaped with a backslash. So use `x
 
 ## eamt-utilities
 
-Utility functions.
+Scripts containing utility functions, that are used by other scripts.
 
 
 

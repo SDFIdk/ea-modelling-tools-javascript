@@ -6,11 +6,11 @@
 !INC eamt-utilities._tagged-values-utils
  
 /**
- * Removes all tagged values with the name given via user input, from all classifiers
+ * Removes all tagged values, with the name given via user input, from all classifiers
  * used in data modelling, and from their properties, 
- * in the selected package and its subpackages.
+ * in the selected package and subpackages.
  *
- * @summary Remove tagged value from the model
+ * @summary Remove a tagged value from the model.
  */
 function main() {
 	// Show the script output window

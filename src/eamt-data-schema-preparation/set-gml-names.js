@@ -20,9 +20,9 @@ flowchart LR
     gisNameSet{"Is tagged value<br />gisName set?"}
     transliteratedNameSet{Is tagged value<br />transliteratedName set?}
     %% outcomes
-    useGisName[Use tagged value gisName]
-    usetransliteratedName[Use tagged value transliteratedName]
-    useModelElementName[Use model element name]
+    useGisName[Use tagged value gisName as value of tagged value gmlName]
+    usetransliteratedName[Use tagged value transliteratedName as value of tagged value gmlName]
+    useModelElementName[Use model element name as value of tagged value gmlName]
     %% arrows
     Start --> gisNameSet
     gisNameSet --> | yes | useGisName --> End
@@ -35,7 +35,7 @@ flowchart LR
  * where the GDAL/OGR [GML driver](https://gdal.org/drivers/vector/gml.html)
  * expects the property name for the feature collection member to end on "member" or "members".
  * 
- * By using those kinds of property names, at least support for GML in GIS is better and thus more user-friendly.
+ * By using those kinds of property names, at least support for GML in QGIS is better and thus more user-friendly.
  * See e.g. https://github.com/inspire-eu-validation/ets-repository/issues/142.
  * 
  * An example:
@@ -89,15 +89,15 @@ classDiagram
 ```
  *
  * A GML document specifying a feature collection of type `MyFeatureCollection`,
- * containing features of type `MyFeature` in it, will then be recognized by
+ * containing features of type `MyFeature`, will be recognized by
  * the GDAL/OGR [GML driver](https://gdal.org/drivers/vector/gml.html)
  * as having a layer called `MyFeature`, and its features can be visualized in QGIS 
- * without doing any modifications or transformation.
+ * without doing any modifications or transformations.
  *
  * For more information about GML feature collections, see section 9.9 in the
  * [GML 3.2.2 specification](https://portal.opengeospatial.org/files/?artifact_id=74183&version=2).
  *
- * @summary Adds tagged values with a GML name
+ * @summary Adds tagged values with a GML name.
  */
 function main() {
 	// Show the script output window

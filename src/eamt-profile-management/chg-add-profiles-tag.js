@@ -9,8 +9,8 @@ var LOGLEVEL = LOGLEVEL_INFO;
 var PROFILES_TAG = "profiles";
 
 /**
- * Add tagged value "profiles" to either all relevant elements and their properties in the selected package
- * or to the selected element and its properties, if that tagged value is not yet present.
+ * Adds tagged value "profiles" to the package and/or classifier (including the classifier's properties)
+ * selected in the project browser, if that tagged value is not yet present.
  *
  * The value of tagged value "profiles" is set to an empty string, if the tagged value is not yet present.
  *

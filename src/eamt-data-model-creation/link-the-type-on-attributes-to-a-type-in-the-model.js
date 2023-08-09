@@ -4,10 +4,10 @@
 !INC eamt-utilities._messages
  
  /**
- * Makes sure that the types of the attributes are actually elements
- * present in the model.
+ * Makes sure that the types of the attributes are actually 
+ * present as classifiers in the model.
  *
- * @summary Change attribute types to types in model
+ * @summary Change attribute type to classifier reference.
  */
 function main() {
 	// Show the script output window

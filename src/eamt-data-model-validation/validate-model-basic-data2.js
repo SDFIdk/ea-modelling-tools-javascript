@@ -5,12 +5,8 @@
 !INC eamt-val-data-model-validation.validation-scripts-basic-data2
 
 /**
- * Script to validate any model against the basic data model rules version 2 
- * (http://grunddatamodel.datafordeler.dk/modelregler/grunddatamodelregler.html).
- * 
- * Select a model in the Project Browser and run this script in order to validate it.
- *
- * @summary Validate a model against the basic data model rules version 2.
+ * Validates a model model against the 
+ * [basic data model rules version 2](http://grunddatamodel.datafordeler.dk/modelregler/grunddatamodelregler.html).
  */
 function main() {
 	

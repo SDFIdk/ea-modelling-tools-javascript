@@ -12,8 +12,8 @@ var PROFILES_SEPARATOR = ",";
 var DEFAULT_VALUE_NO_TAG = "noprofiles";
 
 /**
- * Adds a new profile to either all relevant elements and their properties in the selected package
- * or to the selected element and its properties.
+ * Adds a new profile to the package and/or classifier (including the classifier's properties)
+ * selected in the project browser.
  *
  * @summary Adds a new profile to model elements, if not yet present.
  */

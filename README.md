@@ -4,11 +4,11 @@ Modelling Tools for use with Enterprise Architect
 
 ## Naming conventions for files and folders
 
-Folder and file names must not contain any whitespaces and must only 
-contain lower case characters. A hyphen must be used to separate 
-words in a folder or file name. Scripts that are not executable 
-themselves but are included by other scripts must have a name that 
-starts with an underscore, e.g. `_model-utils`.
+Folder and file names must only contain lower case characters and must 
+not contain any whitespaces. A hyphen must be used to separate words in 
+a folder or file name. Those scripts that are not executable themselves,
+ but are included by other scripts, must have a name that starts with an
+ underscore, e.g. `_model-utils`.
 
 ## Documentation of scripts
 
@@ -18,9 +18,6 @@ each executable script must be documented using
 [JSDoc](https://en.wikipedia.org/wiki/JSDoc). The following code 
 snippet illustrates this.
 
-Note that the JSDoc comment must be placed immediately before the function
-being documented. It is good practice to document all the methods present in a script, however, the JSDoc comment that is exported to src/README.md is the comment that documents the function that is called in the script.
-
 ```js
 
 /**
@@ -28,7 +25,7 @@ being documented. It is good practice to document all the methods present in a s
  *
  * The description can span multiple lines.
  *
- * @summary Optional summary, especially useful when the description is long. Remove this line when the summary is not needed.
+ * @summary Optional summary, especially useful when the description is long (remove this line when the summary is not needed).
  */
 function main() {
 	// logic of function main	
@@ -36,6 +33,13 @@ function main() {
 
 main();
 ```
+
+Note that the JSDoc comment must be placed immediately before the 
+function being documented, blank lines must not be present between the 
+comment and the function. It is good practice to document all the 
+methods present in a script. However, the JSDoc comment that is exported
+  to src/README.md is the comment that documents the function called in 
+the script.
 
 ## Supported JavaScript features
 
