@@ -5,12 +5,9 @@
 !INC profile-test.validation-scripts-profile
 
 /**
- * Script to validate any model against the basic data model rules version 2 for specific profile
- * (http://grunddatamodel.datafordeler.dk/modelregler/grunddatamodelregler.html).
- * 
- * Select a model in the Project Browser, edit the profile in the script and run this script in order to validate model.
- *
- * @summary Validate a model against the basic data model rules version 2.
+ * Validates any model against the
+ * [basic data model rules version 2](http://grunddatamodel.datafordeler.dk/modelregler/grunddatamodelregler.html)
+ * for a specific profile.
  */
 function main() {
 	

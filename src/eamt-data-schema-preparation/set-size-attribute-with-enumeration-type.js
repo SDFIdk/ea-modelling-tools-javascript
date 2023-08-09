@@ -19,20 +19,21 @@ var threeByteCodes = [
 var promptResult;
 
 /**
- * Sets the size tag of attributes based on the length of the enumeration literals 
- * of the enumeration that is the attributes' type.
+ * Adds a tagged value "size" to attributes. The value is based on the 
+ * length of the enumeration literals 
+ * of the enumeration that is the attribute's type.
  *
  * You can choose whether to calculate the length in bytes (for Oracle) or
- * in characters.
+ * in characters (for Oracle and PostgreSQL).
  *
  * Note that the size of characters in a database depends on the character set of 
- * the database. This scripts can be used for an Oracle database with 
+ * the database. This script can be used for an Oracle database with 
  * character set AL32UTF8.
  *
  * See https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
  * and https://docs.oracle.com/search/?q=al32utf8.
  *
- * @summary Sets the size tag of attributes based on their enumeration
+ * @summary Sets the size tag of attributes based on the referenced enumeration.
  */
 function main() {
 	var selectedPackage as EA.Package;

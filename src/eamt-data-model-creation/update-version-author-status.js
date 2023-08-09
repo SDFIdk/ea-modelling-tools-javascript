@@ -7,7 +7,7 @@ var newAuthor;
 var newStatus;
 
 /**
- * Updates the version, author and status on all elements in this package and its subpackages.
+ * Updates the version, author and status on all elements in this package and subpackages.
  *
  * If the package has stereotype Grunddata::DKDomænemodel, the tagged value version is updated.
  *
@@ -16,7 +16,7 @@ var newStatus;
  *
  * Packages with other stereotypes are not supported.
  *
- * @summary Updates the version, author and status
+ * @summary Updates the version, author and status.
  */
 function main() {
 	// Show the script output window

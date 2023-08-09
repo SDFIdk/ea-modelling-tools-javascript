@@ -8,10 +8,12 @@ var SEQUENCE_NUMBER_TAG_NAME = "sequenceNumber";
 var TAGGED_VALUE_NOT_PRESENT_VALUE = "N/A";
 
 /**
- * Validates that a tagged value sequenceNumber is set on the end of outgoing associations of elements
- * that have more than one outgoing association and that no properties have the same sequenceNumber.
+ * Validates all of the following:
  *
- * ShapeChange ensures that in a case where sequence numbers aren't explicitly set,
+ * 1. A tagged value sequenceNumber is set on the ends of outgoing associations of classifiers having more than one outgoing association;
+ * 2. A classifier has no properties with the same sequenceNumber.
+ *
+ * ShapeChange ensures that in a case where sequence numbers are not explicitly set,
  * attributes are placed in front of association roles by giving attributes a sufficiently
  * low sequence number. Therefore, it is sufficient to have sequence numbers on associations ends only,
  * attributes do not need sequence numbers (but may have sequence numbers).

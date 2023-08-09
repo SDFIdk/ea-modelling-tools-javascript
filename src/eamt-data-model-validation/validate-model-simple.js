@@ -5,11 +5,7 @@
 !INC eamt-val-data-model-validation.validation-scripts-basic-data2
 
 /**
- * Script to validate any model against the simplest rules for modelling in SDFI 
- * 
- * Select a model in the Project Browser and run this script in order to validate it.
- *
- * @summary Validate a model against the simplest rules.
+ * Validates any model against the simplest rules for modelling in SDFI.
  */
 function main() {
 	

@@ -17,18 +17,21 @@ var diagramNumber = 0;
 var promptResult;
 
 /**
- * Change the stereotypes on package's, element's, attributes and roles from Grundata 1.2 uml-profile to the Grunddata 2.0 uml-profile.
- * Copies data for Grundata 1.2 tags to Grunddata 2.0 when posible
- * Creates Classificationmodels from Enumerations
- * Diagrams are updated to to Grunddata version 2.0 MDG
- * Definitions and Description are updated to follow Grunddata 2.0  e.g. start with lowerCase and end without full stop
+ * Update a model to use the UML profile for basic data (grunddata) version 2 
+ * instead of the UML profile for basic data version 1. This includes:
  *
- * Requirement : Grunddata2MDG.xml needs to be installed for the script to work.
+ * - updating the stereotypes;
+ * - copying the values of the tagged values, when possible;
+ * - updating the definitions and the description to start with a lower case character and to end without a full stop;
+ * - creating classification models from enumeration, if wanted;
+ * - updating the diagram types.
  *
- * Not all mandatory Grunddata 2.0 tags can be filled out from Grunddata 1.2 tags, so for a model to be Grunddata 2.0 compliant further Grunddata 2.0 tags needs to be set.
+ * Prerequisite: Grunddata2MDG.xml must be installed.
  *
- * @summary Upgrade a model from model rules	"modelregler for Grunddata version 1.2" 
- *							  to model rules	"modelregler for Grunddata version 2.0"
+ * Not all mandatory version 2 tags can be filled out from the version 1 tags, 
+ * so for a model to be version 2 compliant, more tags must be filled out.
+ *
+ * @summary Upgrade a model from the UML profile of "Modelregler for Grunddata version 1" to the UML profile of "Modelregler for Grunddata version 2".
  */
 function main() {
 	Repository.EnsureOutputVisible("Script");

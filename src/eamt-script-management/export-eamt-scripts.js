@@ -11,7 +11,7 @@ var LOGLEVEL = LOGLEVEL_INFO;
  * 2. seperate script files
  * 3. a separate README.md file, containing the documentation extracted from the scripts
  * 
- * The scripts should be saved in folder `ea-modelling-tools-javascript/src`.
+ * The scripts should be saved in folder `.../ea-modelling-tools-javascript/src`.
  *
  * @summary Exports the EAMT scripts
  */

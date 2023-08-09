@@ -20,9 +20,9 @@ flowchart LR
     oracleNameSet{"Is tagged value<br />oracleName set?"}
     transliteratedNameSet{Is tagged value<br />transliteratedName set?}
     %% outcomes
-    useOracleName[Use tagged value oracleName]
-    usetransliteratedName[Use tagged value transliteratedName]
-    useModelElementName[Use model element name]
+    useOracleName[Use the value of tagged value oracleName as value of tagged value dbName]
+    usetransliteratedName[Use tagged value transliteratedName as value of tagged value dbName]
+    useModelElementName[Use model element name as value of tagged value dbName]
     %% arrows
     Start --> oracleNameSet
     oracleNameSet --> | yes | useOracleName --> End
@@ -37,7 +37,7 @@ flowchart LR
  * - beginLifespanVersion → registreringFra
  * - endLifespanVersion → registreringTil
  *
- * @summary Adds tagged values with database name
+ * @summary Adds tagged values with database name.
  */
 function main() {
 	// Show the script output window
