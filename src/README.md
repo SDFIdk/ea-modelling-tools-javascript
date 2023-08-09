@@ -75,6 +75,23 @@ Packages with other stereotypes are not supported.
 
 Scripts that assist in importing and exporting a logical data model.
 
+Certain scripts import or export CSV files. CSV files can be opened, edited and exported using an application capable of dealing with spreadsheets, such as LibreOffice Calc or Microsoft Excel. Use "UTF-8" as character set and a comma (",") as separator. For more information, see
+
+- https://help.libreoffice.org/latest/en-US/text/scalc/guide/csv_files.html?&amp;DbPAR=CALC&amp;System=WIN
+- https://help.libreoffice.org/latest/en-US/text/shared/00/00000208.html?&amp;DbPAR=SHARED&amp;System=WIN
+- https://support.microsoft.com/en-us/office/import-or-export-text-txt-or-csv-files-5250ac4c-663c-47ce-937b-339e391393ba
+
+Warning: Never change the contents of column GUID, as this information is required to link a row in the CSV file to the corresponding UML model element.
+
+Tip: Convert a set of CSV files to one spreadsheet when the data has to be edited by someone else. When the editing is finished, the spreadsheets are converted again to a set of CSV files and imported into EA. The conversion can be done manually, via your spreadsheet application GUI. Another option is to convert the files programmatically, for example by using [ogr2ogr](https://gdal.org/programs/ogr2ogr.html).
+
+```bat
+ogr2ogr -f ODS -nln Classifiers -oo HEADERS=YES documentation.ods "Model_Elements.csv"
+ogr2ogr -update -f ODS -nln Attributes -oo HEADERS=YES documentation.ods "Model_Attributes.csv"
+ogr2ogr -update -f ODS -nln AssociationEnds -oo HEADERS=YES documentation.ods "Model_Associationends.csv"
+ogr2ogr -update -f ODS -nln EnumerationLiterals -oo HEADERS=YES documentation.ods "Model_EnumerationLiterals.csv"
+```
+
 ### export-data-model-vocabulary-da
 
 Exports a data model to a data vocabulary.
