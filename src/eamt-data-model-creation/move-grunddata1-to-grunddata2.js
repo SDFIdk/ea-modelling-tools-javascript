@@ -35,6 +35,9 @@ var promptResult;
  */
 function main() {
 	Repository.EnsureOutputVisible("Script");
+	if (!Repository.IsTechnologyEnabled("Grunddata2")) {
+		throw new Error("MDG Grunddata2 is not enabled");
+	}
 	// Get the currently selected package in the tree to work on
 	var packageMain as EA.Package;
 	packageMain = Repository.GetTreeSelectedPackage();
