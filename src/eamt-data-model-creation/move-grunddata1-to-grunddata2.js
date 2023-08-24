@@ -211,7 +211,7 @@ function copyGrunddataTags(currentElement)
 	var description = getTaggedValueElement(currentElement, "note", "");
 	var newddescription = upgradeStrings(description);
 	addTaggedValueToElement(currentElement, "description_copy", "");
-	changeTaggedValueElementFromShortToLong(currentElement, "description_copy")
+	changeTaggedValueElementFromSingleLineToMultiLine(currentElement, "description_copy")
 	setTaggedValueElement(currentElement, "description_copy", newddescription);
 	
 	var legalSource = getTaggedValueElement(currentElement, "lovgrundlag", "");
@@ -237,7 +237,7 @@ function copyGrunddataTagsAttribute(currentAttribute)
 	var description = getTaggedValueAttribute(currentAttribute, "note", "");
 	var newddescription = upgradeStrings(description);
 	addTaggedValueToAttribute(currentAttribute, "description_copy", "");
-	changeTaggedValueAttributeFromShortToLong(currentAttribute, "description_copy");
+	changeTaggedValueAttributeFromSingleLineToMultiLine(currentAttribute, "description_copy");
 	setTaggedValueAttribute(currentAttribute, "description_copy", newddescription);
 	
 	var legalSource = getTaggedValueAttribute(currentAttribute, "lovgrundlag", "");
