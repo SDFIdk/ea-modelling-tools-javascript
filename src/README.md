@@ -35,14 +35,17 @@ instead of the UML profile for basic data version 1. This includes:
 
 - updating the stereotypes;
 - copying the values of the tagged values, when possible;
-- updating the definitions and the description to start with a lower case character and to end without a full stop;
+- updating the definitions to start with a lower case character and to end without a full stop;
 - creating classification models from enumeration, if wanted;
 - updating the diagram types.
 
-Prerequisite: Grunddata2MDG.xml must be installed.
+Prerequisite: The following MDGs must be installed and enabled:
+- MDG with id GD2MDG (for Basic Data v2) in file Grunddata2MDG.xml;
+- MDG with id Grunddata (for Basic Data v1) in file GrunddataMDG.xml;
+- MDG with id Geodata (for Basic Data v1) in file Geodata MDG.xml.
 
-Not all mandatory version 2 tags can be filled out from the version 1 tags, 
-so for a model to be version 2 compliant, more tags must be filled out.
+MDG's are located in %APPDATA%\Sparx Systems\EA\MDGTechnologies;
+the id of an MDG is found with the following XPath expression: /MDG.Technology/Documentation/
 
 
 
