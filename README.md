@@ -41,6 +41,11 @@ methods present in a script. However, the JSDoc comment that is exported
   to src/README.md is the comment that documents the function called in 
 the script.
 
+### Known limitations
+
+The comment must not contain any @ signs apart from the ones in the 
+JSDoc tags.
+
 ## Supported JavaScript features
 
 Enterprise Architect embeds the [SpiderMonkey](https://spidermonkey.dev/)
