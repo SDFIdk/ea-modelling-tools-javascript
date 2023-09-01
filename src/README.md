@@ -90,7 +90,12 @@ Prerequisite: The following MDGs must be installed and enabled:
 - MDG with id Geodata (for Basic Data v1) in file Geodata MDG.xml.
 
 MDG's are located in %APPDATA%\Sparx Systems\EA\MDGTechnologies;
-the id of an MDG is found with the following XPath expression: /MDG.Technology/Documentation/
+the id of an MDG is found in attribute id in element /MDG.Technology/Documentation/.
+
+Note: it can be neccesary to use script fix-grunddata-dkdomaenemodel-stereotype first.
+
+Note: not all mandatory version 2 tags can be filled out from the version 1 tags, 
+so for a model to be version 2 compliant, more tags must be filled out.
 
 
 
