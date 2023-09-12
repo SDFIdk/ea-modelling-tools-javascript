@@ -109,6 +109,14 @@ in the selected package and subpackages.
 
 
 
+### set-language-none
+
+
+Sets the language of all clasess, datatypes, enumerations, interfaces and packages
+in the selected package to `<none>`, to indicate that the model element is not language-specific.
+
+
+
 ### update-version-author-status
 
 Updates the version, author and status.

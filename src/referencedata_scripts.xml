@@ -125,6 +125,15 @@
       </DataRow>
       <DataRow>
          <Column name="ScriptCategory" value="605A62F7-BCD0-4845-A8D0-7DC45B4D2E3F"/>
+         <Column name="ScriptName" value="{3655FF9C-3CD1-4760-A74F-4F0B743D0C4F}"/>
+         <Column name="ScriptAuthor" value="{AFACCECA-AC91-41a6-8B23-ABE55074DB96}"/>
+         <Column name="Notes"
+                  value="&lt;Script Name=&#34;set-language-none&#34; Type=&#34;Internal&#34; Language=&#34;JavaScript&#34;/&gt;"/>
+         <Column name="Script"
+                  value="!INC eamt-utilities._logging-utils&#xA;!INC eamt-utilities._messages&#xA;!INC eamt-utilities._model-utils&#xA;&#xA;var LOGLEVEL = LOGLEVEL_INFO;&#xA;&#xA;var NO_LANGUAGE = &#34;&lt;none&gt;&#34;;&#xA;&#xA;/**&#xA; * Sets the language of all clasess, datatypes, enumerations, interfaces and packages&#xA; * in the selected package to `&lt;none&gt;`, to indicate that the model element is not language-specific.&#xA; */&#xA;function main() {&#xA;&#x9;Repository.EnsureOutputVisible(&#34;Script&#34;);&#xA;&#xA;&#x9;var aPackage as EA.Package;&#xA;&#x9;aPackage = Repository.GetTreeSelectedPackage();&#xA;&#x9;&#xA;&#x9;LOGInfo(&#34;=======================================&#34;);&#xA;&#x9;if (aPackage != null &amp;&amp; aPackage.ParentID != 0) {&#xA;&#x9;&#x9;LOGInfo(&#34;Working on package '&#34; + aPackage.Name + &#34;' (ID=&#34; + aPackage.PackageID + &#34;).&#34;);&#xA;&#x9;&#x9;var elements = getElementsOfPackageAndSubpackages(aPackage);&#xA;&#x9;&#x9;var element as EA.Element;&#xA;&#x9;&#x9;for (var i in elements) {&#xA;&#x9;&#x9;&#x9;element = elements[i];&#xA;&#x9;&#x9;&#x9;if (element.Type == &#34;Class&#34; || element.Type == &#34;Enumeration&#34; || element.Type == &#34;DataType&#34; || element.Type == 'Interface') {&#xA;&#x9;&#x9;&#x9;&#x9;element.Gentype = NO_LANGUAGE;&#xA;&#x9;&#x9;&#x9;&#x9;element.Update();&#xA;&#x9;&#x9;&#x9;&#x9;element.Refresh();&#xA;&#x9;&#x9;&#x9;&#x9;LOGDebug(&#34;Set language to &#34; + NO_LANGUAGE + &#34; on &#34; + element.Name);&#xA;&#x9;&#x9;&#x9;}&#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;var packages = getSubpackagesOfPackage(aPackage).concat(aPackage);&#xA;&#x9;&#x9;var element as EA.Element;&#xA;&#x9;&#x9;for (var i in packages) {&#xA;&#x9;&#x9;&#x9;element = packages[i].Element;&#xA;&#x9;&#x9;&#x9;element.Gentype = NO_LANGUAGE;&#xA;&#x9;&#x9;&#x9;element.Update();&#xA;&#x9;&#x9;&#x9;element.Refresh();&#xA;&#x9;&#x9;&#x9;LOGDebug(&#34;Set language to &#34; + NO_LANGUAGE + &#34; on &#34; + aPackage.Name);&#xA;&#x9;&#x9;}&#xA;&#x9;&#x9;LOGInfo(&#34;Done.&#34;)&#xA;&#x9;} else {&#xA;&#x9;&#x9;throw new Error(MESSAGE_PACKAGE_REQUIRED);&#xA;&#x9;}&#xA;}&#xA;&#xA;main();"/>
+      </DataRow>
+      <DataRow>
+         <Column name="ScriptCategory" value="605A62F7-BCD0-4845-A8D0-7DC45B4D2E3F"/>
          <Column name="ScriptName" value="{411F9902-09C6-41bc-AD53-5786557967A6}"/>
          <Column name="ScriptAuthor" value="{70C0A695-3A03-4816-8FBB-A157114FA8E8}"/>
          <Column name="Notes"
