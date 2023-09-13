@@ -16,6 +16,8 @@
 function main() {
 	Repository.EnsureOutputVisible("Script");
 	
+	verifyEaModellingToolsJavaInstallation();
+	
 	// Get the currently selected package in the tree to work on
 	var package as EA.Package;
 	package = Repository.GetTreeSelectedPackage();
@@ -65,7 +67,7 @@ function main() {
 		
 		openFolderInWindowsExplorer(outputFolder);
 	} else {
-		LOGError(MESSAGE_PACKAGE_REQUIRED);
+		throw new Error(MESSAGE_PACKAGE_REQUIRED);
 	}
 }
 

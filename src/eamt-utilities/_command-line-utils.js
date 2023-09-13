@@ -64,7 +64,7 @@ function runBatFileInSpecifiedWorkingDirectory(workingDirectory, batFileToInvoke
 	if (processId != "-1") {
 		runBatFileInSpecifiedWorkingDirectoryWithProcessId(workingDirectory, batFileToInvoke, processId, programArguments);
 	} else {
-		LOGError("Cannot proceed, stopping here.");
+		throw new Error("Cannot proceed, stopping here.");
 	}
 }
 
@@ -80,7 +80,7 @@ function runBatFileInSpecifiedWorkingDirectoryWithProcessId(workingDirectory, ba
 	var locationDMT = WSH_SHELL.ExpandEnvironmentStrings(environmentString);
 	if (environmentString == locationDMT) {
 		LOGError("Environment variable " + ENV_VARIABLE_LOCATION_TOOLS + " not set, set this environment variable and restart Enterprise Architect");
-		return;
+		throw new Error("Have you installed EA Modelling Tools Java (correctly)?");
 	} else {
 		var command = '"' + locationDMT + '\\bin\\' + batFileToInvoke + '"' + " -eapid " + processId + " " + programArguments;
 		LOGInfo("command: " + command);
@@ -109,10 +109,10 @@ function determineProcessId() {
 		var output = wse.StdOut.ReadAll();
 		LOGInfo(output);
 		if (output.indexOf("No tasks are running which match the specified criteria") != -1) {
-			LOGError("Is the command correct? Check the script.");
+			throw new Error("Is the command correct? Check the script.");
 			processId = "-1";
 		} else if (output.search(/\n"EA.exe"/g) != -1) {
-			LOGError("More than one task found. Is the command correct? Check the script.");
+			throw new Error("More than one task found. Is the command correct? Check the script.");
 			processId = "-1";
 		} else {
 			// process id is the second value: "EA.exe","4852",...
@@ -205,6 +205,19 @@ function getFileNameWithoutExtensionForInstanceOfEA() {
 	LOGInfo(connectionString);
 	var fileName = connectionString.substring(connectionString.lastIndexOf("\\") + 1, connectionString.lastIndexOf("."));
 	return fileName;
+}
+
+/*
+ * Verifies that the environment variable EAMT_HOME is set, which is an indication
+ * that the EA Modelling Tools Java have been correctly installed.
+ */
+function verifyEaModellingToolsJavaInstallation() {
+	var environmentString = "%" + ENV_VARIABLE_LOCATION_TOOLS + "%";
+	var locationDMT = WSH_SHELL.ExpandEnvironmentStrings(environmentString);
+	if (environmentString == locationDMT) {
+		LOGError("Environment variable " + ENV_VARIABLE_LOCATION_TOOLS + " not set, set this environment variable and restart Enterprise Architect");
+		throw new Error("Have you installed EA Modelling Tools Java (correctly)?");
+	}
 }
 
 /*
