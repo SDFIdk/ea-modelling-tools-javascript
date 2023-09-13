@@ -22,6 +22,8 @@ var LOGLEVEL = LOGLEVEL_INFO;
 function main() {
 	Repository.EnsureOutputVisible("Script");
 	
+	verifyEaModellingToolsJavaInstallation();
+	
 	// a backslash must be escaped in Javascript, therefore two backslashes
 	var scriptGroupNameOrRegex = Session.Input("Script group name or regex for a collection of scripts groups");
 	if (scriptGroupNameOrRegex.length == 0) {

@@ -18,6 +18,8 @@ var LOGLEVEL = LOGLEVEL_INFO;
 function main() {
 	Repository.EnsureOutputVisible("Script");
 	
+	verifyEaModellingToolsJavaInstallation();
+	
 	/*
 	 * A backslash must be escaped in Javascript, therefore two backslashes:
 	 * - one because the asterisk must be escaped with a backslash when calling a Java program from the command line
