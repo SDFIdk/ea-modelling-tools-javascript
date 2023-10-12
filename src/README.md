@@ -153,6 +153,43 @@ ogr2ogr -update -f ODS -nln AssociationEnds -oo HEADERS=YES documentation.ods "M
 ogr2ogr -update -f ODS -nln EnumerationLiterals -oo HEADERS=YES documentation.ods "Model_EnumerationLiterals.csv"
 ```
 
+### export-data-model-configurable
+
+Exports a data model with the user-defined settings.
+
+Exports a data model to a CSV file.
+The package containing the data model must be selected in the Project Browser.
+
+It is possible to choose the language:
+choose between da (Danish), en (English) and und (all available languages).
+
+It is possible to choose the strictness mode: choose between strict (fail when a tag is
+missing in the model), moderate (print _MISSING TAG_ in the output file when a tag is missing
+in the model) and lenient (output an empty string in the output file when a tag is missing in
+in the model. Use lenient when you are dealing with a model that you cannot change right now.
+Use moderate to identify the missing tags, and them in the model, and run this script again,
+now with strictness mode strict.
+
+This script uses one of the templates data_model_profile_csv.ftl in %EAMT_HOME%/config/templates.
+
+
+
+### export-data-model-da-strict
+
+Exports a data model with the default settings.
+
+Exports a data model to a CSV file.
+The package containing the data model must be selected in the Project Browser.
+
+Only the language-independent and the Danish tags are exported. If one of those tags is missing in
+the model, the called application will fail (check the log file!).
+
+Use script export-data-model-configurable for more options.
+
+This script uses one of the templates data_model_profile_csv.ftl in %EAMT_HOME%/config/templates.
+
+
+
 ### export-data-model-vocabulary-da
 
 Exports a data model to a data vocabulary.

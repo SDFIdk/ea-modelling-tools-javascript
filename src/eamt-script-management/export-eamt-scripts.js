@@ -33,7 +33,7 @@ function main() {
 		return;
 	}
 	
-	runBatFileInDefaultWorkingDirectory("export-scripts.bat", '-sg "' + scriptGroupNameOrRegex + '" -o ' + scriptFolderPath + " -doc -p 5");
+	runBatFileInDefaultWorkingDirectory("export-scripts.bat", '-sg "' + scriptGroupNameOrRegex + '" -o ' + scriptFolderPath + " -doc");
 	
 	openFolderInWindowsExplorer(scriptFolderPath);
 }
