@@ -2,7 +2,7 @@
 !INC eamt-utilities._messages
 !INC eamt-utilities._model-utils
 !INC eamt-utilities._tagged-values-utils
-!INC eamt-val-data-model-validation.validation-scripts-basic-data2
+!INC eamt-data-model-validation._validation-functions-basic-data2
 
 /**
  * Validates any model against the simplest rules for modelling in SDFI.
