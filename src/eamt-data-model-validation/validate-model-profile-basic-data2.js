@@ -2,7 +2,7 @@
 !INC eamt-utilities._messages
 !INC eamt-utilities._model-utils
 !INC eamt-utilities._tagged-values-utils
-!INC profile-test.validation-scripts-profile
+!INC eamt-data-model-validation._validation-functions-profile-basic-data2
 
 /**
  * Validates any model against the
@@ -51,10 +51,8 @@ function main() {
 		
 		Session.Output(" ");
 		Session.Output("Regel 4.4: Angiv meningsfyldte navne og beskrivelser for modellen");		
-		Session.Output("title (da) og description (da): ");
+		Session.Output("title (da), description (da), language og modelScope: ");
 		modeltags1(selectedPackage);
-		Session.Output("language og modelScope: ");
-		modeltags1_2(selectedPackage);
 		Session.Output("Beskrivelser og titler bør kontrolleres manuelt for at sikre meningsfyldt indhold.");
 		
 		Session.Output(" ");
