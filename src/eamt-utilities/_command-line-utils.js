@@ -3,8 +3,6 @@
  */
  !INC eamt-utilities._logging-utils
 
-var ENV_VARIABLE_LOCATION_TOOLS = "EAMT_HOME";
-
 /**
  * Provides access to aspects of the Windows Shell, such as applications, shortscuts, environment variables,
  * the registry, and operating environment (from "Windows Powershell Pocket References" by Lee Holmes).
@@ -51,7 +49,7 @@ var BTN_CONTINUE = 11;
  * @param {string} arguments to give to the .bat file
  */
 function runBatFileInDefaultWorkingDirectory(batFileToInvoke, programArguments) {
-	runBatFileInSpecifiedWorkingDirectory(WSH_SHELL.ExpandEnvironmentStrings("%" + ENV_VARIABLE_LOCATION_TOOLS + "%"), batFileToInvoke, programArguments);
+	runBatFileInSpecifiedWorkingDirectory(WSH_SHELL.ExpandEnvironmentStrings("%EAMT_HOME%"), batFileToInvoke, programArguments);
 }
 
 /**
@@ -76,16 +74,10 @@ function runBatFileInSpecifiedWorkingDirectory(workingDirectory, batFileToInvoke
  * @private
  */
 function runBatFileInSpecifiedWorkingDirectoryWithProcessId(workingDirectory, batFileToInvoke, processId, programArguments) {
-	var environmentString = "%" + ENV_VARIABLE_LOCATION_TOOLS + "%";
-	var locationDMT = WSH_SHELL.ExpandEnvironmentStrings(environmentString);
-	if (environmentString == locationDMT) {
-		LOGError("Environment variable " + ENV_VARIABLE_LOCATION_TOOLS + " not set, set this environment variable and restart Enterprise Architect");
-		throw new Error("Have you installed EA Modelling Tools Java (correctly)?");
-	} else {
-		var command = '"' + locationDMT + '\\bin\\' + batFileToInvoke + '"' + " -eapid " + processId + " " + programArguments;
-		LOGInfo("command: " + command);
-		runCommand(workingDirectory, command);
-	}
+	verifyEaModellingToolsJavaInstallation();
+	var command = '"' + WSH_SHELL.ExpandEnvironmentStrings("%EAMT_HOME%") + '\\bin\\' + batFileToInvoke + '"' + " -eapid " + processId + " " + programArguments;
+	LOGInfo("command: " + command);
+	runCommand(workingDirectory, command);
 }
 
 /**
@@ -212,10 +204,13 @@ function getFileNameWithoutExtensionForInstanceOfEA() {
  * that the EA Modelling Tools Java have been correctly installed.
  */
 function verifyEaModellingToolsJavaInstallation() {
-	var environmentString = "%" + ENV_VARIABLE_LOCATION_TOOLS + "%";
-	var locationDMT = WSH_SHELL.ExpandEnvironmentStrings(environmentString);
-	if (environmentString == locationDMT) {
-		LOGError("Environment variable " + ENV_VARIABLE_LOCATION_TOOLS + " not set, set this environment variable and restart Enterprise Architect");
+	var locationDMT = WSH_SHELL.ExpandEnvironmentStrings("%EAMT_HOME%");
+	LOGInfo("EAMT_HOME: " + locationDMT);
+	LOGInfo("EA_JAVA_API: " + WSH_SHELL.ExpandEnvironmentStrings("%EA_JAVA_API%"));
+	LOGInfo("JAVA_HOME: " + WSH_SHELL.ExpandEnvironmentStrings("%JAVA_HOME%"));
+	LOGInfo("JAVACMD: " + WSH_SHELL.ExpandEnvironmentStrings("%JAVACMD%"));
+	if ("%EAMT_HOME%" == locationDMT) {
+		LOGError("Environment variable EAMT_HOME not set, set this environment variable and restart Enterprise Architect");
 		throw new Error("Have you installed EA Modelling Tools Java (correctly)?");
 	}
 }
