@@ -190,6 +190,24 @@ This script uses one of the templates data_model_profile_csv.ftl in %EAMT_HOME%/
 
 
 
+### export-data-model-sql-query
+
+Exports the result of an SQL query to a CSV file.
+
+Exports a certain view of a data model, exposed via an SQL query, to a CSV file.
+
+The SQL query must not contain new lines or line breaks.
+
+If one of the columns represent a Notes field, special handling is needed because
+Notes can contain HTML tags and HTML character entities. Currently, all columns
+are handled in the same way, there in other words no possibility to indicate per column
+whether special handling is needed.
+
+An example is an export of the restrictions present in a model. The constraint
+text is stored in a Notes field.
+
+
+
 ### export-data-model-vocabulary-da
 
 Exports a data model to a data vocabulary.
