@@ -220,6 +220,33 @@ This script uses template vocabulary_csv.ftl in %EAMT_HOME%/config/templates.
 
 
 
+### import-data-model-custom-tags
+
+Updates a data model by importing the tags specified in a CSV file.
+
+Updates a data model by importing the tags specified in a CSV file.
+Use this scripts for tags NOT defined by a UML profile. If the tag does not
+exist yet, it will be created. If the specified value is empty, the tag
+will be deleted.
+
+The output of query model_elements_tagged_value_export (EA Modellings Tools SQL)
+can be used as a starting point for the file to import.
+
+
+
+### import-data-model-umlprofile-tags
+
+Updates a data model by importing the tags specified in a CSV file.
+
+Updates a data model by importing the tags specified in a CSV file.
+Use this scripts for tags defined by a UML profile. If the tag does not
+exist yet, it will not be created.
+
+The output of one of the scripts export-data-model-*
+can be used as a starting point for the file to import.
+
+
+
 ## eamt-data-model-validation
 
 Validation scripts to validate the model against for instance the basic data model rules version 2. 
@@ -522,6 +549,7 @@ Note that an asterisk (*) in a regex must be escaped with a backslash. So use `x
 ## eamt-utilities
 
 Scripts containing utility functions, that are used by other scripts.
+
 
 
 
