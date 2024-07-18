@@ -133,6 +133,8 @@ function changeElementStereotypes(currentPackage, packageMain) {
 			changeConnectorEndStereotype(currentElement);
 		} else if (currentElement.FQStereotype == "Grunddata::DKKodeliste") {
 			changeStereotypeAndTagsElement(currentElement, "Grunddata2::DKKodeliste");
+			// needed for e.g. LER model
+			changeStereotypeAndTagsAttribute(currentElement, "Grunddata2::DKEnumværdi");
 		} else if (currentElement.FQStereotype == "Grunddata::DKDatatype") {
 			changeStereotypeAndTagsElement(currentElement, "Grunddata2::DKDatatype");
 			changeStereotypeAndTagsAttribute(currentElement, "Grunddata2::DKEgenskab");

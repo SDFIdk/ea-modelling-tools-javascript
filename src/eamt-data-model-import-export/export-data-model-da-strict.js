@@ -39,6 +39,8 @@ function main() {
 		runBatFileInDefaultWorkingDirectory("export-data-model.bat", options);
 		
 		openFolderInWindowsExplorer(outputFolder);
+		
+		LOGInfo("Done!");
 	} else {
 		throw new Error(MESSAGE_PACKAGE_REQUIRED);
 	}

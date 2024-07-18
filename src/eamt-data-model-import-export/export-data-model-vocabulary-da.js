@@ -66,6 +66,8 @@ function main() {
 		runBatFileInDefaultWorkingDirectory("export-data-model-vocabulary.bat", options);
 		
 		openFolderInWindowsExplorer(outputFolder);
+		
+		LOGInfo("Done!");
 	} else {
 		throw new Error(MESSAGE_PACKAGE_REQUIRED);
 	}
