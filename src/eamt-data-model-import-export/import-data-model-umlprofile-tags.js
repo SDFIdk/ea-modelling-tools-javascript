@@ -34,7 +34,10 @@ function main() {
 		
 		runBatFileInDefaultWorkingDirectory("update-data-model-tags.bat", options);
 		
-		Repository.ReloadPackage(package.PackageID);
+		LOGInfo("Done, refresh model view to reflect updates.");
+		Repository.RefreshModelView(package.PackageID);
+		
+		// Log messages written after refreshing the model view do not show up in the output...
 	} else {
 		throw new Error(MESSAGE_PACKAGE_REQUIRED);
 	}

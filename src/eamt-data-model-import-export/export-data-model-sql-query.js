@@ -60,6 +60,8 @@ function main() {
 		runBatFileInDefaultWorkingDirectory("export-sqlquery-result-to-csv.bat", options);
 		
 		openFolderInWindowsExplorer(outputFolder);
+		
+		LOGInfo("Done!");
 	} else {
 		throw new Error(MESSAGE_PACKAGE_REQUIRED);
 	}
