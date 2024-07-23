@@ -146,21 +146,26 @@ function runCommand(directory, command) {
 		LOGError("The command below was not called successfully, executing it (again) to see its output");
 		LOGInfo(command);
 		var wse = WSH_SHELL.Exec(command, 1, true);
-		while (wse.Status == 0) {
-			LOGInfo("Executing command");
-			// alternative way of "sleeping"
-			// see also https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/windows-scripting/x83z1d9f%28v%3dvs.84%29
-			// see also http://www.sparxsystems.com/forums/smf/index.php/topic,6063.msg127934.html
-			WSH_SHELL.Popup("Executing command", 1, "Info message", PT_OK + PT_ICONINFORMATION);
-		}
-		if (!wse.StdOut.AtEndOfStream) {
-			LOGInfo(wse.StdOut.ReadAll());
-		}
-		if (!wse.StdErr.AtEndOfStream) {
-			var errorOutput = wse.StdErr.ReadAll();
-			LOGError(errorOutput);
-			if (errorOutput.indexOf("UnsupportedClassVersionError") != -1) {
-				throw new Error("You seem to be using an unsupported Java version. Double-check the instructions regarding installation and setting of the user environment variables for the EA Modelling Tools Java.")
+		if (wse == null) {
+			LOGError("The command could not be run at all");
+			throw new Error("Have you installed the latest version of the EA Modelling Tools Java? You seem to try to execute a batch file that does not exist yet in your installation (command: " + command + ").");
+		} else {
+			while (wse.Status == 0) {
+				LOGInfo("Executing command");
+				// alternative way of "sleeping"
+				// see also https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/windows-scripting/x83z1d9f%28v%3dvs.84%29
+				// see also http://www.sparxsystems.com/forums/smf/index.php/topic,6063.msg127934.html
+				WSH_SHELL.Popup("Executing command", 1, "Info message", PT_OK + PT_ICONINFORMATION);
+			}
+			if (!wse.StdOut.AtEndOfStream) {
+				LOGInfo(wse.StdOut.ReadAll());
+			}
+			if (!wse.StdErr.AtEndOfStream) {
+				var errorOutput = wse.StdErr.ReadAll();
+				LOGError(errorOutput);
+				if (errorOutput.indexOf("UnsupportedClassVersionError") != -1) {
+					throw new Error("You seem to be using an unsupported Java version. Double-check the instructions regarding installation and setting of the user environment variables for the EA Modelling Tools Java.")
+				}
 			}
 		}
 	}
