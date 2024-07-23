@@ -76,8 +76,8 @@ function runBatFileInSpecifiedWorkingDirectory(workingDirectory, batFileToInvoke
 function runBatFileInSpecifiedWorkingDirectoryWithProcessId(workingDirectory, batFileToInvoke, processId, programArguments) {
 	verifyEaModellingToolsJavaInstallation();
 	var command = '"' + WSH_SHELL.ExpandEnvironmentStrings("%EAMT_HOME%") + '\\bin\\' + batFileToInvoke + '"' + " -eapid " + processId + " " + programArguments;
-	LOGInfo("command: " + command);
 	runCommand(workingDirectory, command);
+	LOGInfo("In case of unexpected or no results, check the log file in " + WSH_SHELL.ExpandEnvironmentStrings("%EAMT_HOME%") + "\\log\\" + " for details about the execution");
 }
 
 /**
@@ -128,10 +128,10 @@ function determineProcessId() {
  * @param command {string}
  */
 function runCommand(directory, command) {
-	var commandFinishedSuccessfully;
-	
 	WSH_SHELL.CurrentDirectory = directory;
 	LOGInfo("Current directory: "+ WSH_SHELL.CurrentDirectory);
+	LOGInfo("Command to run: ");
+	LOGInfo(command);
 
 	/*
 	 * The Run command returns an integer.
@@ -140,11 +140,30 @@ function runCommand(directory, command) {
 	 */
 	var result = WSH_SHELL.Run(command, 1, true);
 	if (result == 0) {
-		commandFinishedSuccessfully = true;
+		LOGInfo("The command below was called successfully.");
+		LOGInfo(command);
 	} else {
-		commandFinishedSuccessfully = false;
+		LOGError("The command below was not called successfully, executing it (again) to see its output");
+		LOGInfo(command);
+		var wse = WSH_SHELL.Exec(command, 1, true);
+		while (wse.Status == 0) {
+			LOGInfo("Executing command");
+			// alternative way of "sleeping"
+			// see also https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/windows-scripting/x83z1d9f%28v%3dvs.84%29
+			// see also http://www.sparxsystems.com/forums/smf/index.php/topic,6063.msg127934.html
+			WSH_SHELL.Popup("Executing command", 1, "Info message", PT_OK + PT_ICONINFORMATION);
+		}
+		if (!wse.StdOut.AtEndOfStream) {
+			LOGInfo(wse.StdOut.ReadAll());
+		}
+		if (!wse.StdErr.AtEndOfStream) {
+			var errorOutput = wse.StdErr.ReadAll();
+			LOGError(errorOutput);
+			if (errorOutput.indexOf("UnsupportedClassVersionError") != -1) {
+				throw new Error("You seem to be using an unsupported Java version. Double-check the instructions regarding installation and setting of the user environment variables for the EA Modelling Tools Java.")
+			}
+		}
 	}
-	return commandFinishedSuccessfully;
 }
 
 /**
@@ -206,12 +225,17 @@ function getFileNameWithoutExtensionForInstanceOfEA() {
 function verifyEaModellingToolsJavaInstallation() {
 	var locationDMT = WSH_SHELL.ExpandEnvironmentStrings("%EAMT_HOME%");
 	LOGInfo("EAMT_HOME: " + locationDMT);
-	LOGInfo("EA_JAVA_API: " + WSH_SHELL.ExpandEnvironmentStrings("%EA_JAVA_API%"));
+	var locationEaJavaApi = WSH_SHELL.ExpandEnvironmentStrings("%EA_JAVA_API%");
+	LOGInfo("EA_JAVA_API: " + locationEaJavaApi);
 	LOGInfo("JAVA_HOME: " + WSH_SHELL.ExpandEnvironmentStrings("%JAVA_HOME%"));
 	LOGInfo("JAVACMD: " + WSH_SHELL.ExpandEnvironmentStrings("%JAVACMD%"));
 	if ("%EAMT_HOME%" == locationDMT) {
 		LOGError("Environment variable EAMT_HOME not set, set this environment variable and restart Enterprise Architect");
-		throw new Error("Have you installed EA Modelling Tools Java (correctly)?");
+		throw new Error("Environment variable EAMT_HOME not set, set this environment variable and restart Enterprise Architect. See also the installation instructions of the EA Modelling Tools Java.");
+	}
+	if ("%EA_JAVA_API%" == locationEaJavaApi) {
+		LOGError("Environment variable EA_JAVA_API not set, set this environment variable and restart Enterprise Architect");
+		throw new Error("Environment variable EA_JAVA_API not set, set this environment variable and restart Enterprise Architect. See also the installation instructions of the EA Modelling Tools Java.");
 	}
 }
 
