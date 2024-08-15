@@ -224,7 +224,7 @@ function getFileNameWithoutExtensionForInstanceOfEA() {
 }
 
 /*
- * Verifies that the environment variable EAMT_HOME is set, which is an indication
+ * Verifies that the correct environment variables are set, which is an indication
  * that the EA Modelling Tools Java have been correctly installed.
  */
 function verifyEaModellingToolsJavaInstallation() {
@@ -233,7 +233,8 @@ function verifyEaModellingToolsJavaInstallation() {
 	var locationEaJavaApi = WSH_SHELL.ExpandEnvironmentStrings("%EA_JAVA_API%");
 	LOGInfo("EA_JAVA_API: " + locationEaJavaApi);
 	LOGInfo("JAVA_HOME: " + WSH_SHELL.ExpandEnvironmentStrings("%JAVA_HOME%"));
-	LOGInfo("JAVACMD: " + WSH_SHELL.ExpandEnvironmentStrings("%JAVACMD%"));
+	var locationJavaCmd = WSH_SHELL.ExpandEnvironmentStrings("%JAVACMD%");
+	LOGInfo("JAVACMD: " + locationJavaCmd);
 	if ("%EAMT_HOME%" == locationDMT) {
 		LOGError("Environment variable EAMT_HOME not set, set this environment variable and restart Enterprise Architect");
 		throw new Error("Environment variable EAMT_HOME not set, set this environment variable and restart Enterprise Architect. See also the installation instructions of the EA Modelling Tools Java.");
@@ -241,6 +242,10 @@ function verifyEaModellingToolsJavaInstallation() {
 	if ("%EA_JAVA_API%" == locationEaJavaApi) {
 		LOGError("Environment variable EA_JAVA_API not set, set this environment variable and restart Enterprise Architect");
 		throw new Error("Environment variable EA_JAVA_API not set, set this environment variable and restart Enterprise Architect. See also the installation instructions of the EA Modelling Tools Java.");
+	}
+	if ("%JAVACMD%" != locationJavaCmd && locationJavaCmd.indexOf(" ") != -1) {
+		LOGError("Environment variable JAVACMD is set but contains a space, reset this environment variable and restart Enterprise Architect");
+		throw new Error("Environment variable JAVACMD is set but contains a space, reset this environment variable and restart Enterprise Architect. See also the installation instructions of the EA Modelling Tools Java.");
 	}
 }
 
