@@ -17,6 +17,15 @@ and/or line breaks and new lines.
 
 
 
+### create-context-diagrams
+
+Create context diagrams in a model.
+
+Creates a context diagram for the classifiers that must have a context diagram
+The diagram is auto-layouted but should be further refined afterwards.
+
+
+
 ### fix-grunddata-dkdomaenemodel-stereotype
 
 Sets the stereotype of a model to Grunddata::DKDomænemodel.
